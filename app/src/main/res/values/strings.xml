@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">iVedioPlayer</string>
+    <string name="need_open_permission_before_use">需要开启权限后才能使用</string>
+    <string name="go_setting">去设置</string>
+    <string name="cancel">取消</string>
 </resources>
