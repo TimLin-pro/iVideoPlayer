@@ -10,6 +10,8 @@
         android:id="@+id/mIvVideoPreview"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         app:layout_constraintBottom_toTopOf="@id/mTvName"
         app:layout_constraintVertical_weight="1"
         tools:src="@tools:sample/avatars"/>
@@ -17,7 +19,11 @@
     <TextView
         android:id="@+id/mTvTime"
         android:layout_width="wrap_content"
-        android:layout_height="20dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_black_round_rect"
+        android:padding="2dp"
+        android:textColor="@android:color/white"
+        android:textSize="10dp"
         app:layout_constraintBottom_toBottomOf="@id/mIvVideoPreview"
         app:layout_constraintEnd_toEndOf="@id/mIvVideoPreview"
         tools:text="02:00"/>
@@ -26,15 +32,19 @@
         android:id="@+id/mTvName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginRight="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/mIvMore"
         tools:text="天堂电影院"
         />
 
     <ImageView
         android:id="@+id/mIvMore"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:padding="4dp"
+        android:scaleType="centerCrop"
         android:src="@drawable/ic_more"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>

@@ -4,9 +4,9 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.android.timlin.ivedioplayer.R
 import kotlinx.android.synthetic.main.item_video.view.*
 import java.util.*
+
 
 /**
  * Created by linjintian on 2019/2/19.
@@ -16,7 +16,7 @@ class VideoListAdapter : RecyclerView.Adapter<VideoListAdapter.VideoFileViewHold
     var mOnItemClickListener: OnItemClickListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VideoFileViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_video, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(com.android.timlin.ivedioplayer.R.layout.item_video, parent, false)
         return VideoFileViewHolder(view)
     }
 
@@ -39,7 +39,11 @@ class VideoListAdapter : RecyclerView.Adapter<VideoListAdapter.VideoFileViewHold
         }
 
         fun bindView(videoEntry: VideoEntry) {
-//            itemView.mIvVideoPreview.
+//            GlideApp.with(itemView.context)
+//                    .load(videoEntry.thumbnail)
+//                    .into(itemView.mIvVideoPreview)
+//            val thumbnail = ThumbnailUtils.createVideoThumbnail(videoEntry.path, MediaStore.Images.Thumbnails.MINI_KIND)
+            itemView.mIvVideoPreview.setImageBitmap(videoEntry.thumbnail)
             itemView.mTvName.text = videoEntry.name
             itemView.mTvTime.text = videoEntry.time
             //TODO "预览"

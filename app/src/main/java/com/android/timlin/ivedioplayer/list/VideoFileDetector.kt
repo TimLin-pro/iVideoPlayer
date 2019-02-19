@@ -1,14 +1,15 @@
 package com.android.timlin.ivedioplayer.list
 
 import android.arch.lifecycle.MutableLiveData
+import android.media.ThumbnailUtils
 import android.os.Environment
+import android.provider.MediaStore
 import android.util.Log
 import com.android.timlin.ivedioplayer.list.file.FileEntry
 import com.android.timlin.ivedioplayer.list.video.VideoEntry
 import com.android.timlin.ivedioplayer.utils.FileUtils
 import io.reactivex.Observable
 import io.reactivex.Observer
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.observables.GroupedObservable
 import io.reactivex.schedulers.Schedulers
@@ -24,7 +25,6 @@ object VideoFileDetector {
     private var mVideoEntryList: ArrayList<VideoEntry> = ArrayList()
     var mFileEntryListLiveData = MutableLiveData<List<FileEntry>>()
     var mVideoEntryListLiveData = MutableLiveData<List<VideoEntry>>()
-        get
 
     fun getRootFileData() {
         mFileEntryList.clear()
@@ -35,7 +35,6 @@ object VideoFileDetector {
             Observable.just(rootFile)
                     .flatMap { file -> listFiles(file) }
                     .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(object : Observer<File> {
                         override fun onSubscribe(d: Disposable) {
 
@@ -71,7 +70,7 @@ object VideoFileDetector {
                         }
 
                         override fun onNext(file: File) {
-                            mVideoEntryList.add(VideoEntry(file.name, file.path, FileUtils.formatFileSize(file.length()), ""))
+                            mVideoEntryList.add(VideoEntry(file.name, file.absolutePath, FileUtils.formatFileSize(file.length()), "", ThumbnailUtils.createVideoThumbnail(file.absolutePath, MediaStore.Images.Thumbnails.MINI_KIND)))
                             //TODO "视频时长"
                         }
 
@@ -90,7 +89,6 @@ object VideoFileDetector {
         Observable.fromIterable(fileList)
                 .groupBy { file -> file.parentFile }//以视频文件的父文件夹路径进行分组
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(object : Observer<GroupedObservable<File, File>> {
                     override fun onSubscribe(d: Disposable) {
 
@@ -98,7 +96,7 @@ object VideoFileDetector {
 
                     override fun onComplete() {
                         Log.d(TAG, "groupBy onCompleted")
-                        mFileEntryListLiveData.value = mFileEntryList
+                        mFileEntryListLiveData.postValue(mFileEntryList)
                     }
 
                     override fun onError(e: Throwable) {

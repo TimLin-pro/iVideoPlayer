@@ -6,7 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.GridLayoutManager
 import com.android.timlin.ivedioplayer.InjectorUtils
 import com.android.timlin.ivedioplayer.R
 import kotlinx.android.synthetic.main.activity_video_list.*
@@ -20,9 +20,9 @@ class VideoListActivity : AppCompatActivity() {
         setContentView(R.layout.activity_video_list)
         mPath = intent.getStringExtra(Companion.KEY_PATH)
 
-        mVideoListRecyclerView.layoutManager = LinearLayoutManager(this)
+        mVideoListRecyclerView.layoutManager = GridLayoutManager(this, 2)
         val videoListAdapter = VideoListAdapter()
-        videoListAdapter.mOnItemClickListener = object :VideoListAdapter.OnItemClickListener{
+        videoListAdapter.mOnItemClickListener = object : VideoListAdapter.OnItemClickListener {
             override fun onItemClick(position: Int, videoEntry: VideoEntry) {
                 TODO("播放视频")
             }
