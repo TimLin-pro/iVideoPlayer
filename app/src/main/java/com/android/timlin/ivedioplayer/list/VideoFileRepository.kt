@@ -8,15 +8,15 @@ import java.io.File
 /**
  * Created by linjintian on 2019/2/17.
  */
-class FileRepository private constructor(var mVideoFileDetector: FileDetector) {
+class VideoFileRepository private constructor(var mVideoFileDetector: VideoFileDetector) {
     var mInitialized: Boolean = false
 
-    fun getFileEntry(): MutableLiveData<List<FileEntry>> {
-        initializeData()
+    fun getFileEntryList(): MutableLiveData<List<FileEntry>> {
+        initializeFileEntryData()
         return mVideoFileDetector.mFileEntryListLiveData
     }
 
-    private fun initializeData() {
+    private fun initializeFileEntryData() {
         if (mInitialized) return
         mInitialized = true
         mVideoFileDetector.getRootFileData()
@@ -29,13 +29,13 @@ class FileRepository private constructor(var mVideoFileDetector: FileDetector) {
 
     companion object {
         @Volatile
-        private var sInstance: FileRepository? = null
+        private var sInstance: VideoFileRepository? = null
 
-        fun getInstance(videoFileDetector: FileDetector): FileRepository? {
+        fun getInstance(videoFileDetector: VideoFileDetector): VideoFileRepository? {
             if (sInstance == null) {
-                synchronized(FileRepository::class.java) {
+                synchronized(VideoFileRepository::class.java) {
                     if (sInstance == null) {
-                        sInstance = FileRepository(videoFileDetector)
+                        sInstance = VideoFileRepository(videoFileDetector)
                     }
                 }
             }

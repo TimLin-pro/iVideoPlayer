@@ -17,8 +17,8 @@ import java.io.File
 /**
  * detect video file
  * */
-object FileDetector {
-    private val TAG = "FileDetector"
+object VideoFileDetector {
+    private val TAG = "VideoFileDetector"
     private var mFileList: ArrayList<File> = ArrayList()
     private var mFileEntryList: ArrayList<FileEntry> = ArrayList()
     private var mVideoEntryList: ArrayList<VideoEntry> = ArrayList()
