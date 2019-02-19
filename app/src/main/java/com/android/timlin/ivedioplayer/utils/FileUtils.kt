@@ -1,4 +1,4 @@
-package com.android.timlin.ivedioplayer.list.file.data
+package com.android.timlin.ivedioplayer.utils
 
 import java.io.File
 import java.net.URLConnection
@@ -10,6 +10,9 @@ import java.util.*
  */
 object FileUtils {
     private const val PREFIX_VIDEO = "video/"
+    private const val KB = 1024.0
+    private const val MB = KB * KB
+    private const val GB = KB * KB * KB
     private val VIDEO_EXTENSIONS: Array<String> = arrayOf("test", "3gp", "wmv", "ts", "3gp2", "rmvb", "mp4", "mov", "m4v", "avi", "3gpp", "3gpp2", "mkv", "flv", "divx", "f4v", "rm", "avb", "asf", "ram", "avs", "mpg", "v8", "swf", "m2v", "asx", "ra", "ndivx", "box", "xvid")
     private val mHashVideo: HashSet<String>
 
@@ -45,4 +48,12 @@ object FileUtils {
         return fileNameMap.getContentTypeFor(fileName)
     }
 
+    fun formatFileSize(size: Long): String {
+        return when {
+            size < KB -> size.toString() + "B"
+            size < MB -> String.format("%.1f", size / KB) + "KB"
+            size < GB -> String.format("%.1f", size / MB) + "MB"
+            else -> String.format("%.1f", size / GB) + "GB"
+        }
+    }
 }

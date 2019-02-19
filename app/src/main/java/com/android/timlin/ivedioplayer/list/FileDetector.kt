@@ -1,8 +1,11 @@
-package com.android.timlin.ivedioplayer.list.file.data
+package com.android.timlin.ivedioplayer.list
 
 import android.arch.lifecycle.MutableLiveData
 import android.os.Environment
 import android.util.Log
+import com.android.timlin.ivedioplayer.list.file.FileEntry
+import com.android.timlin.ivedioplayer.list.video.VideoEntry
+import com.android.timlin.ivedioplayer.utils.FileUtils
 import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -18,8 +21,10 @@ object FileDetector {
     private val TAG = "FileDetector"
     private var mFileList: ArrayList<File> = ArrayList()
     private var mFileEntryList: ArrayList<FileEntry> = ArrayList()
-    private var mFileListLiveData = MutableLiveData<List<File>>()
+    private var mVideoEntryList: ArrayList<VideoEntry> = ArrayList()
     var mFileEntryListLiveData = MutableLiveData<List<FileEntry>>()
+    var mVideoEntryListLiveData = MutableLiveData<List<VideoEntry>>()
+        get
 
     fun getRootFileData() {
         mFileEntryList.clear()
@@ -47,6 +52,35 @@ object FileDetector {
 
                         override fun onError(e: Throwable) {
                             Log.e(TAG, "onError: ", e)
+                        }
+                    })
+        }
+    }
+
+    /**
+     * 获取某一个文件夹中的视频文件
+     */
+    fun getVideoData(directory: File?) {
+        mVideoEntryList.clear()
+        if (directory != null && directory.isDirectory) {
+            Observable.fromArray<File>(*directory.listFiles())
+                    .filter { file -> file.exists() && file.canRead() && FileUtils.isVideoFile(file) }
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(object : Observer<File> {
+                        override fun onSubscribe(d: Disposable) {
+                        }
+
+                        override fun onNext(file: File) {
+                            mVideoEntryList.add(VideoEntry(file.name, file.path, FileUtils.formatFileSize(file.length()), ""))
+                            //TODO "视频时长"
+                        }
+
+                        override fun onError(e: Throwable) {
+                            Log.e(TAG, "getVideoDataError", e)
+                        }
+
+                        override fun onComplete() {
+                            mVideoEntryListLiveData.postValue(mVideoEntryList)
                         }
                     })
         }
@@ -86,7 +120,7 @@ object FileDetector {
                             }
 
                             override fun onComplete() {
-                                mFileEntryList.add(FileEntry(fileGroupedObservable.key.toString(), mParentName, mCount))
+                                mFileEntryList.add(FileEntry(fileGroupedObservable.key.toString(), mParentName!!, mCount))
                                 mCount = 0
                                 mParentName = null
                             }

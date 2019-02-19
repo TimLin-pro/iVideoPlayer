@@ -6,16 +6,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.android.timlin.ivedioplayer.R
-import com.android.timlin.ivedioplayer.list.file.data.FileEntry
 
 /**
  * Created by linjintian on 2019/2/17.
  */
 class FileListAdapter : RecyclerView.Adapter<FileListAdapter.VideoFileViewHolder>() {
     var mFileEntryList: List<FileEntry> = ArrayList()
+    var mItemClickListener: ItemClickListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, itemType: Int): VideoFileViewHolder {
-        val v = LayoutInflater.from(parent.context).inflate(R.layout.item_video_file, parent, false)
+        val v = LayoutInflater.from(parent.context).inflate(R.layout.item_file, parent, false)
         return VideoFileViewHolder(v)
     }
 
@@ -32,13 +32,22 @@ class FileListAdapter : RecyclerView.Adapter<FileListAdapter.VideoFileViewHolder
         notifyDataSetChanged()
     }
 
+
     inner class VideoFileViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var mTvPath: TextView = itemView.findViewById(R.id.tvPath)
         var mTvCount: TextView = itemView.findViewById(R.id.tvCount)
+
+        init {
+            itemView.setOnClickListener { mItemClickListener?.onItemClick(adapterPosition, mFileEntryList[adapterPosition]) }
+        }
 
         fun bindView(fileEntry: FileEntry) {
             mTvPath.text = fileEntry.path
             mTvCount.text = "${fileEntry.count}个视频文件"
         }
+    }
+
+    interface ItemClickListener {
+        fun onItemClick(pos: Int, fileEntry: FileEntry)
     }
 }

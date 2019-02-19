@@ -16,7 +16,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.android.timlin.ivedioplayer.InjectorUtils
-import kotlinx.android.synthetic.main.fragment_video_list.*
+import com.android.timlin.ivedioplayer.R.layout
+import com.android.timlin.ivedioplayer.R.string
+import com.android.timlin.ivedioplayer.list.video.VideoListActivity
+import kotlinx.android.synthetic.main.fragment_file_list.*
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -56,13 +59,18 @@ class FileListFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(com.android.timlin.ivedioplayer.R.layout.fragment_video_list, container, false)
+        return inflater.inflate(layout.fragment_file_list, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         videoRecyclerView.layoutManager = LinearLayoutManager(activity)
         mFileListAdapter = FileListAdapter()
+        mFileListAdapter.mItemClickListener = object : FileListAdapter.ItemClickListener {
+            override fun onItemClick(pos: Int, fileEntry: FileEntry) {
+                VideoListActivity.startActivity(context!!, fileEntry.path)
+            }
+        }
         videoRecyclerView.adapter = mFileListAdapter
         if (checkSelfPermission(context!!, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PERMISSION_GRANTED) {
             requestPermissions(PERMISSIONS_STORAGE, REQUEST_PERMISSION_CODE)
@@ -79,16 +87,17 @@ class FileListFragment : Fragment() {
         })
     }
 
+
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         if (grantResults[0] == PERMISSION_GRANTED && requestCode == REQUEST_PERMISSION_CODE) {
             observerFileData()
         } else {
             AlertDialog.Builder(context!!)
-                    .setMessage(getString(com.android.timlin.ivedioplayer.R.string.need_open_permission_before_use))
-                    .setPositiveButton(getString(com.android.timlin.ivedioplayer.R.string.go_setting)) { _, _ ->
+                    .setMessage(getString(string.need_open_permission_before_use))
+                    .setPositiveButton(getString(string.go_setting)) { _, _ ->
                         jump2SettingPage()
                     }
-                    .setNegativeButton(getString(com.android.timlin.ivedioplayer.R.string.cancel)) { dialog, which ->
+                    .setNegativeButton(getString(string.cancel)) { dialog, which ->
                         dialog.dismiss()
                     }
                     .show()
