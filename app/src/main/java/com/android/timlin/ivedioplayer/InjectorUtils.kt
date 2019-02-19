@@ -1,8 +1,8 @@
 package com.android.timlin.ivedioplayer
 
-import com.android.timlin.ivedioplayer.file.FileViewModelFactory
-import com.android.timlin.ivedioplayer.file.data.VideoFileDetector
-import com.android.timlin.ivedioplayer.file.data.VideoFileRepository
+import com.android.timlin.ivedioplayer.list.file.FileViewModelFactory
+import com.android.timlin.ivedioplayer.list.file.data.VideoFileDetector
+import com.android.timlin.ivedioplayer.list.file.data.VideoFileRepository
 
 /**
  * Created by linjintian on 2019/2/18.

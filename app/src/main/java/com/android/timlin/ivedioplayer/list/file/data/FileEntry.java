@@ -1,4 +1,4 @@
-package com.android.timlin.ivedioplayer.file.data;
+package com.android.timlin.ivedioplayer.list.file.data;
 
 import java.io.Serializable;
 

@@ -1,4 +1,4 @@
-package com.android.timlin.ivedioplayer.file
+package com.android.timlin.ivedioplayer.list.file
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.android.timlin.ivedioplayer.R
-import com.android.timlin.ivedioplayer.file.data.FileEntry
+import com.android.timlin.ivedioplayer.list.file.data.FileEntry
 
 /**
  * Created by linjintian on 2019/2/17.

@@ -1,4 +1,4 @@
-package com.android.timlin.ivedioplayer.file
+package com.android.timlin.ivedioplayer.list.file
 
 import android.Manifest
 import android.arch.lifecycle.Observer

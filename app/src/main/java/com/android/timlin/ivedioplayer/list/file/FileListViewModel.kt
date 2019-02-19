@@ -1,9 +1,9 @@
-package com.android.timlin.ivedioplayer.file
+package com.android.timlin.ivedioplayer.list.file
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.ViewModel
-import com.android.timlin.ivedioplayer.file.data.FileEntry
-import com.android.timlin.ivedioplayer.file.data.VideoFileRepository
+import com.android.timlin.ivedioplayer.list.file.data.FileEntry
+import com.android.timlin.ivedioplayer.list.file.data.VideoFileRepository
 
 /**
  * Created by linjintian on 2019/2/17.

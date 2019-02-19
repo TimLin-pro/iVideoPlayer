@@ -5,7 +5,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-import com.android.timlin.ivedioplayer.file.VideoListFragment;
+import com.android.timlin.ivedioplayer.list.file.VideoListFragment;
 
 public class MainActivity extends AppCompatActivity {
 
