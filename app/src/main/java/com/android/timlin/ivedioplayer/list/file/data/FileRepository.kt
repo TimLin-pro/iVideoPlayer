@@ -5,7 +5,7 @@ import android.arch.lifecycle.MutableLiveData
 /**
  * Created by linjintian on 2019/2/17.
  */
-class VideoFileRepository private constructor(var mVideoFileDetector: VideoFileDetector) {
+class FileRepository private constructor(var mVideoFileDetector: FileDetector) {
     var mInitialized: Boolean = false
 
     fun getFileEntry(): MutableLiveData<List<FileEntry>> {
@@ -21,13 +21,13 @@ class VideoFileRepository private constructor(var mVideoFileDetector: VideoFileD
 
     companion object {
         @Volatile
-        private var sInstance: VideoFileRepository? = null
+        private var sInstance: FileRepository? = null
 
-        fun getInstance(videoFileDetector: VideoFileDetector): VideoFileRepository? {
+        fun getInstance(videoFileDetector: FileDetector): FileRepository? {
             if (sInstance == null) {
-                synchronized(VideoFileRepository::class.java) {
+                synchronized(FileRepository::class.java) {
                     if (sInstance == null) {
-                        sInstance = VideoFileRepository(videoFileDetector)
+                        sInstance = FileRepository(videoFileDetector)
                     }
                 }
             }

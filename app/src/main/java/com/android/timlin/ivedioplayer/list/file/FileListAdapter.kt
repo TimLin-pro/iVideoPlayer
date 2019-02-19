@@ -11,7 +11,7 @@ import com.android.timlin.ivedioplayer.list.file.data.FileEntry
 /**
  * Created by linjintian on 2019/2/17.
  */
-class VideoFileListAdapter : RecyclerView.Adapter<VideoFileListAdapter.VideoFileViewHolder>() {
+class FileListAdapter : RecyclerView.Adapter<FileListAdapter.VideoFileViewHolder>() {
     var mFileEntryList: List<FileEntry> = ArrayList()
 
     override fun onCreateViewHolder(parent: ViewGroup, itemType: Int): VideoFileViewHolder {
