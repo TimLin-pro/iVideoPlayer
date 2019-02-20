@@ -1,6 +1,7 @@
 package com.android.timlin.ivedioplayer.list
 
 import android.arch.lifecycle.MutableLiveData
+import android.media.MediaPlayer
 import android.media.ThumbnailUtils
 import android.os.Environment
 import android.provider.MediaStore
@@ -14,6 +15,8 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.observables.GroupedObservable
 import io.reactivex.schedulers.Schedulers
 import java.io.File
+import java.text.SimpleDateFormat
+import java.util.*
 
 /**
  * detect video file
@@ -25,6 +28,10 @@ object VideoFileDetector {
     private var mVideoEntryList: ArrayList<VideoEntry> = ArrayList()
     var mFileEntryListLiveData = MutableLiveData<List<FileEntry>>()
     var mVideoEntryListLiveData = MutableLiveData<List<VideoEntry>>()
+    //todo 留意内存问题
+    private var mMediaPlayer = MediaPlayer()
+    private val FORMAT = "HH:mm:ss"
+    private var mFormatter = SimpleDateFormat(FORMAT)
 
     fun getRootFileData() {
         mFileEntryList.clear()
@@ -70,7 +77,7 @@ object VideoFileDetector {
                         }
 
                         override fun onNext(file: File) {
-                            mVideoEntryList.add(VideoEntry(file.name, file.absolutePath, FileUtils.formatFileSize(file.length()), "", ThumbnailUtils.createVideoThumbnail(file.absolutePath, MediaStore.Images.Thumbnails.MINI_KIND)))
+                            mVideoEntryList.add(VideoEntry(file.name, file.absolutePath, FileUtils.formatFileSize(file.length()), getFormattedDuration(file), ThumbnailUtils.createVideoThumbnail(file.absolutePath, MediaStore.Images.Thumbnails.MINI_KIND)))
                             //TODO "视频时长"
                         }
 
@@ -83,6 +90,13 @@ object VideoFileDetector {
                         }
                     })
         }
+    }
+
+    private fun getFormattedDuration(file: File): String {
+        mMediaPlayer.setDataSource(file.path)
+        //todo 可能比较耗时，需要修改实现方式
+        mMediaPlayer.prepare()
+        return mFormatter.format(mMediaPlayer.duration)
     }
 
     private fun groupByFiles(fileList: List<File>) {
