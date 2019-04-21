@@ -8,7 +8,7 @@ import android.provider.MediaStore
 import android.util.Log
 import com.android.timlin.ivedioplayer.list.file.FileEntry
 import com.android.timlin.ivedioplayer.list.video.VideoEntry
-import com.android.timlin.ivedioplayer.utils.FileUtils
+import com.android.timlin.ivedioplayer.common.utils.FileUtils
 import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
@@ -77,7 +77,8 @@ object VideoFileDetector {
                         }
 
                         override fun onNext(file: File) {
-                            mVideoEntryList.add(VideoEntry(file.name, file.absolutePath, FileUtils.formatFileSize(file.length()), getFormattedDuration(file), ThumbnailUtils.createVideoThumbnail(file.absolutePath, MediaStore.Images.Thumbnails.MINI_KIND)))
+                            mVideoEntryList.add(VideoEntry(file.name, file.absolutePath, "unknown", "0", ThumbnailUtils.createVideoThumbnail(file.absolutePath, MediaStore.Images.Thumbnails.MINI_KIND)))
+//                            mVideoEntryList.add(VideoEntry(file.name, file.absolutePath, FileUtils.formatFileSize(file.length()), getFormattedDuration(file), ThumbnailUtils.createVideoThumbnail(file.absolutePath, MediaStore.Images.Thumbnails.MINI_KIND)))
                             //TODO "视频时长"
                         }
 

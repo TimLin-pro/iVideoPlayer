@@ -1,4 +1,4 @@
-package com.android.timlin.ivedioplayer.utils
+package com.android.timlin.ivedioplayer.common.utils
 
 import java.io.File
 import java.net.URLConnection

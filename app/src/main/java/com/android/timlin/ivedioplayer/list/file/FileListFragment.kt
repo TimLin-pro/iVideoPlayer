@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat.checkSelfPermission
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,6 +27,7 @@ import kotlinx.android.synthetic.main.fragment_file_list.*
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
+private const val TAG = "FileListFragment"
 
 /**
  * A simple [Fragment] subclass.
@@ -83,8 +85,17 @@ class FileListFragment : Fragment() {
         val factory = InjectorUtils.provideFileViewModelFactory()
         mViewModel = ViewModelProviders.of(this, factory).get(FileListViewModel::class.java)
         mViewModel.mFileEntryList.observe(this, Observer {
-            it?.let { it1 -> mFileListAdapter.swapFileEntryList(it1) }
+            it?.let { it1 ->
+                Log.d(TAG, "it1.size = ${it1.size}")
+                if (it1.isEmpty()) {
+                    showEmptyView()
+                }
+                mFileListAdapter.swapFileEntryList(it1)
+            }
         })
+    }
+
+    private fun showEmptyView() {
     }
 
 
