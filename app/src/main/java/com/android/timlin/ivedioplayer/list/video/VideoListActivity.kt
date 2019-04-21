@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
 import com.android.timlin.ivedioplayer.InjectorUtils
 import com.android.timlin.ivedioplayer.R
+import com.android.timlin.ivedioplayer.player.activities.VideoActivity
 import kotlinx.android.synthetic.main.activity_video_list.*
 import java.io.File
 
@@ -24,7 +25,7 @@ class VideoListActivity : AppCompatActivity() {
         val videoListAdapter = VideoListAdapter()
         videoListAdapter.mOnItemClickListener = object : VideoListAdapter.OnItemClickListener {
             override fun onItemClick(position: Int, videoEntry: VideoEntry) {
-                TODO("播放视频")
+                VideoActivity.intentTo(this@VideoListActivity, videoEntry.path, videoEntry.name)
             }
         }
         mVideoListRecyclerView.adapter = videoListAdapter
