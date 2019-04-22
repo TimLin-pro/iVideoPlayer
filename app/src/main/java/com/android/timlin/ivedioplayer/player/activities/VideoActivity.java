@@ -17,12 +17,10 @@
 
 package com.android.timlin.ivedioplayer.player.activities;
 
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -34,6 +32,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TableLayout;
 import android.widget.TextView;
@@ -45,6 +44,7 @@ import com.android.timlin.ivedioplayer.player.fragments.TracksFragment;
 import com.android.timlin.ivedioplayer.player.widget.media.AndroidMediaController;
 import com.android.timlin.ivedioplayer.player.widget.media.IjkVideoView;
 import com.android.timlin.ivedioplayer.player.widget.media.MeasureHelper;
+import com.android.timlin.ivedioplayer.player.widget.media.PlayerSpeedController;
 
 import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 import tv.danmaku.ijk.media.player.misc.ITrackInfo;
@@ -53,7 +53,7 @@ public class VideoActivity extends AppCompatActivity implements TracksFragment.I
     private static final String TAG = "VideoActivity";
 
     private String mVideoPath;
-    private Uri    mVideoUri;
+    private Uri mVideoUri;
 
     private AndroidMediaController mMediaController;
     private IjkVideoView mVideoView;
@@ -64,6 +64,7 @@ public class VideoActivity extends AppCompatActivity implements TracksFragment.I
 
     private Settings mSettings;
     private boolean mBackPressed;
+    private PlayerSpeedController mPlayerSpeedController;
 
     public static Intent newIntent(Context context, String videoPath, String videoTitle) {
         Intent intent = new Intent(context, VideoActivity.class);
@@ -93,25 +94,6 @@ public class VideoActivity extends AppCompatActivity implements TracksFragment.I
                 mVideoPath = intent.getDataString();
             } else if (intentAction.equals(Intent.ACTION_SEND)) {
                 mVideoUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-                    String scheme = mVideoUri.getScheme();
-                    if (TextUtils.isEmpty(scheme)) {
-                        Log.e(TAG, "Null unknown scheme\n");
-                        finish();
-                        return;
-                    }
-                    if (scheme.equals(ContentResolver.SCHEME_ANDROID_RESOURCE)) {
-                        mVideoPath = mVideoUri.getPath();
-                    } else if (scheme.equals(ContentResolver.SCHEME_CONTENT)) {
-                        Log.e(TAG, "Can not resolve content below Android-ICS\n");
-                        finish();
-                        return;
-                    } else {
-                        Log.e(TAG, "Unknown scheme " + scheme + "\n");
-                        finish();
-                        return;
-                    }
-                }
             }
         }
 
@@ -120,17 +102,28 @@ public class VideoActivity extends AppCompatActivity implements TracksFragment.I
         }
 
         // init UI
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         ActionBar actionBar = getSupportActionBar();
-        mMediaController = new AndroidMediaController(this, false);
+        mMediaController = new AndroidMediaController(this, true);
         mMediaController.setSupportActionBar(actionBar);
+        mMediaController.setPrevNextListeners(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "onClick: next");
+            }
+        }, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "onClick: prev");
+            }
+        });
 
-        mToastTextView = (TextView) findViewById(R.id.toast_text_view);
-        mHudView = (TableLayout) findViewById(R.id.hud_view);
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mRightDrawer = (ViewGroup) findViewById(R.id.right_drawer);
+        mToastTextView = findViewById(R.id.toast_text_view);
+        mHudView = findViewById(R.id.hud_view);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
+        mRightDrawer = findViewById(R.id.right_drawer);
 
         mDrawerLayout.setScrimColor(Color.TRANSPARENT);
 
@@ -138,7 +131,7 @@ public class VideoActivity extends AppCompatActivity implements TracksFragment.I
         IjkMediaPlayer.loadLibrariesOnce(null);
         IjkMediaPlayer.native_profileBegin("libijkplayer.so");
 
-        mVideoView = (IjkVideoView) findViewById(R.id.video_view);
+        mVideoView = findViewById(R.id.video_view);
         mVideoView.setMediaController(mMediaController);
         mVideoView.setHudView(mHudView);
         // prefer mVideoPath
@@ -152,6 +145,7 @@ public class VideoActivity extends AppCompatActivity implements TracksFragment.I
             return;
         }
         mVideoView.start();
+        mPlayerSpeedController = new PlayerSpeedController(mVideoView, getWindow().getDecorView());
     }
 
     @Override
@@ -184,42 +178,48 @@ public class VideoActivity extends AppCompatActivity implements TracksFragment.I
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_toggle_ratio) {
-            int aspectRatio = mVideoView.toggleAspectRatio();
-            String aspectRatioText = MeasureHelper.getAspectRatioText(this, aspectRatio);
-            mToastTextView.setText(aspectRatioText);
-            mMediaController.showOnce(mToastTextView);
-            return true;
-        } else if (id == R.id.action_toggle_player) {
-            int player = mVideoView.togglePlayer();
-            String playerText = IjkVideoView.getPlayerText(this, player);
-            mToastTextView.setText(playerText);
-            mMediaController.showOnce(mToastTextView);
-            return true;
-        } else if (id == R.id.action_toggle_render) {
-            int render = mVideoView.toggleRender();
-            String renderText = IjkVideoView.getRenderText(this, render);
-            mToastTextView.setText(renderText);
-            mMediaController.showOnce(mToastTextView);
-            return true;
-        } else if (id == R.id.action_show_info) {
-            mVideoView.showMediaInfo();
-        } else if (id == R.id.action_show_tracks) {
-            if (mDrawerLayout.isDrawerOpen(mRightDrawer)) {
-                Fragment f = getSupportFragmentManager().findFragmentById(R.id.right_drawer);
-                if (f != null) {
+        switch (id) {
+            case R.id.action_toggle_ratio:
+                int aspectRatio = mVideoView.toggleAspectRatio();
+                String aspectRatioText = MeasureHelper.getAspectRatioText(this, aspectRatio);
+                mToastTextView.setText(aspectRatioText);
+                mMediaController.showOnce(mToastTextView);
+                return true;
+            case R.id.action_toggle_player:
+                int player = mVideoView.togglePlayer();
+                String playerText = IjkVideoView.getPlayerText(this, player);
+                mToastTextView.setText(playerText);
+                mMediaController.showOnce(mToastTextView);
+                return true;
+            case R.id.action_toggle_render:
+                int render = mVideoView.toggleRender();
+                String renderText = IjkVideoView.getRenderText(this, render);
+                mToastTextView.setText(renderText);
+                mMediaController.showOnce(mToastTextView);
+                return true;
+            case R.id.action_show_info:
+                mVideoView.showMediaInfo();
+                break;
+            case R.id.action_show_tracks:
+                if (mDrawerLayout.isDrawerOpen(mRightDrawer)) {
+                    Fragment f = getSupportFragmentManager().findFragmentById(R.id.right_drawer);
+                    if (f != null) {
+                        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                        transaction.remove(f);
+                        transaction.commit();
+                    }
+                    mDrawerLayout.closeDrawer(mRightDrawer);
+                } else {
+                    Fragment f = TracksFragment.newInstance();
                     FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                    transaction.remove(f);
+                    transaction.replace(R.id.right_drawer, f);
                     transaction.commit();
+                    mDrawerLayout.openDrawer(mRightDrawer);
                 }
-                mDrawerLayout.closeDrawer(mRightDrawer);
-            } else {
-                Fragment f = TracksFragment.newInstance();
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.right_drawer, f);
-                transaction.commit();
-                mDrawerLayout.openDrawer(mRightDrawer);
-            }
+                break;
+            case R.id.action_speed:
+                mPlayerSpeedController.show();
+                break;
         }
 
         return super.onOptionsItemSelected(item);
