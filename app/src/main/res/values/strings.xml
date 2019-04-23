@@ -73,5 +73,7 @@
     <string name="VideoView_player_IjkExoMediaPlayer">Player: IjkExoMediaPlayer</string>
     <string name="play_speed">播放速度</string>
     <string name="speed">速度</string>
+    <string name="need_storage_permission">需要存储权限</string>
+    <string name="count_videos">个视频</string>
 
 </resources>

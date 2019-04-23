@@ -15,7 +15,7 @@ class FileListAdapter : RecyclerView.Adapter<FileListAdapter.VideoFileViewHolder
     var mItemClickListener: ItemClickListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, itemType: Int): VideoFileViewHolder {
-        val v = LayoutInflater.from(parent.context).inflate(R.layout.item_file, parent, false)
+        val v = LayoutInflater.from(parent.context).inflate(R.layout.item_folder, parent, false)
         return VideoFileViewHolder(v)
     }
 
@@ -34,8 +34,8 @@ class FileListAdapter : RecyclerView.Adapter<FileListAdapter.VideoFileViewHolder
 
 
     inner class VideoFileViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var mTvPath: TextView = itemView.findViewById(R.id.tvPath)
-        var mTvCount: TextView = itemView.findViewById(R.id.tvCount)
+        var mTvPath: TextView = itemView.findViewById(R.id.tv_folder_name)
+        var mTvCount: TextView = itemView.findViewById(R.id.tv_count)
 
         init {
             itemView.setOnClickListener { mItemClickListener?.onItemClick(adapterPosition, mFileEntryList[adapterPosition]) }

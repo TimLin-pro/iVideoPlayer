@@ -15,11 +15,7 @@
         <activity android:name=".list.video.VideoListActivity">
         </activity>
         <activity android:name=".MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
         </activity>
 
         <activity
@@ -67,12 +63,21 @@
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
                 <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE"/>
 
                 <data android:mimeType="video/*" />
             </intent-filter>
         </activity>
 
         <activity android:name=".player.activities.FileExplorerActivity"/>
+        <activity android:name=".list.file.loader.VideoFolderListActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <activity android:name=".list.video.loader.VideoItemListActivity"/>
 
         <service
             android:name=".player.services.MediaPlayerService"
