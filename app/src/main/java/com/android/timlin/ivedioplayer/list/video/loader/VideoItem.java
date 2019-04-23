@@ -32,11 +32,16 @@ public class VideoItem implements Parcelable {
     public final long size;
     public final long duration;
 
-    private VideoItem(long id, String mimeType, String displayName,long size, long duration) {
+    private VideoItem(long id, String mimeType, String displayName, long size, long duration) {
         this.id = id;
         this.mimeType = mimeType;
         this.displayName = displayName;
-        Uri contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+        Uri contentUri;
+        if (isVideo()) {
+            contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+        } else {
+            contentUri = MediaStore.Files.getContentUri("external");
+        }
         this.uri = ContentUris.withAppendedId(contentUri, id);
         this.size = size;
         this.duration = duration;
@@ -84,6 +89,11 @@ public class VideoItem implements Parcelable {
                 cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DISPLAY_NAME)),
                 cursor.getLong(cursor.getColumnIndex(MediaStore.MediaColumns.SIZE)),
                 cursor.getLong(cursor.getColumnIndex("duration")));
+    }
+
+    public boolean isVideo() {
+        if (mimeType == null) return false;
+        return mimeType.startsWith("video");
     }
 
     public Uri getContentUri() {

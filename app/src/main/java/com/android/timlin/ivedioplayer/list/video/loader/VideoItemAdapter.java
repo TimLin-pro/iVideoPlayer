@@ -62,21 +62,24 @@ public class VideoItemAdapter extends RecyclerViewCursorAdapter<VideoItemAdapter
             Log.d(TAG, "bindView: called");
             try {
                 mVideoItem = VideoItem.valueOf(cursor);
-//                mIvVideoPreview.setImageResource(mVideoItem.uri);
-                GlideApp.with(mIvVideoPreview)
-                        .asBitmap()
-                        .load(mVideoItem.getContentUri())
-                        .apply(new RequestOptions()
-                                .override(90, 90)
-                                .placeholder(R.drawable.ic_placeholder)
-                                .centerCrop())
-                        .into(mIvVideoPreview);
+                bindThumbnail();
                 mTvName.setText(mVideoItem.displayName);
                 //todo 耗时操作，移到子线程
                 mTvTime.setText(DateUtils.formatElapsedTime(mVideoItem.duration / 1000));
             } catch (Exception e) {
                 Log.e(TAG, "bindView: ", e);
             }
+        }
+
+        private void bindThumbnail() {
+            GlideApp.with(mIvVideoPreview)
+                    .asBitmap()
+                    .load(mVideoItem.uri)
+                    .apply(new RequestOptions()
+                            .override(80, 90)
+                            .placeholder(R.drawable.ic_placeholder)
+                            .centerCrop())
+                    .into(mIvVideoPreview);
         }
 
 //        private int getImageResize(Context context) {
