@@ -75,5 +75,6 @@
     <string name="speed">速度</string>
     <string name="need_storage_permission">需要存储权限</string>
     <string name="count_videos">个视频</string>
+    <string name="empty_text">还没有视频</string>
 
 </resources>

@@ -3,6 +3,7 @@ package com.android.timlin.ivedioplayer.list.video.loader;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,10 +12,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.timlin.ivedioplayer.R;
+import com.android.timlin.ivedioplayer.common.GlideApp;
 import com.android.timlin.ivedioplayer.common.RecyclerViewCursorAdapter;
 import com.android.timlin.ivedioplayer.player.activities.VideoActivity;
-
-import java.text.SimpleDateFormat;
+import com.bumptech.glide.request.RequestOptions;
 
 /**
  * Created by linjintian on 2019/4/23.
@@ -49,8 +50,8 @@ public class VideoItemAdapter extends RecyclerViewCursorAdapter<VideoItemAdapter
         private TextView mTvTime;
         private TextView mTvName;
         private ImageView mIvMore;
-        private static final String FORMAT = "HH:mm:ss";
-        private SimpleDateFormat mFormatter = new SimpleDateFormat(FORMAT);
+        private int mImageResize;
+
         public MediaViewHolder(View itemView) {
             super(itemView);
             itemView.setOnClickListener(this);
@@ -62,13 +63,34 @@ public class VideoItemAdapter extends RecyclerViewCursorAdapter<VideoItemAdapter
             try {
                 mVideoItem = VideoItem.valueOf(cursor);
 //                mIvVideoPreview.setImageResource(mVideoItem.uri);
+                GlideApp.with(mIvVideoPreview)
+                        .asBitmap()
+                        .load(mVideoItem.getContentUri())
+                        .apply(new RequestOptions()
+                                .override(90, 90)
+                                .placeholder(R.drawable.ic_placeholder)
+                                .centerCrop())
+                        .into(mIvVideoPreview);
                 mTvName.setText(mVideoItem.displayName);
                 //todo 耗时操作，移到子线程
-                mTvTime.setText(mFormatter.format(mVideoItem.duration));
+                mTvTime.setText(DateUtils.formatElapsedTime(mVideoItem.duration / 1000));
             } catch (Exception e) {
                 Log.e(TAG, "bindView: ", e);
             }
         }
+
+//        private int getImageResize(Context context) {
+//            if (mImageResize == 0) {
+//                RecyclerView.LayoutManager lm = mRecyclerView.getLayoutManager();
+//                int spanCount = ((GridLayoutManager) lm).getSpanCount();
+//                int screenWidth = context.getResources().getDisplayMetrics().widthPixels;
+//                int availableWidth = screenWidth - context.getResources().getDimensionPixelSize(
+//                        R.dimen.media_grid_spacing) * (spanCount - 1);
+//                mImageResize = availableWidth / spanCount;
+//                mImageResize = (int) (mImageResize * mSelectionSpec.thumbnailScale);
+//            }
+//            return mImageResize;
+//        }
 
         //getPath 存在问题
         @Override

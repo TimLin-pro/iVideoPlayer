@@ -8,6 +8,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.android.timlin.ivedioplayer.R;
@@ -25,12 +26,14 @@ public class VideoFolderListActivity extends FragmentActivity implements VideoFo
     private static final String TAG = "VideoFolderListActivity";
     private VideoFolderAdapter mVideoFolderAdapter = new VideoFolderAdapter();
     private VideoFolderCollection mVideoFolderCollection = new VideoFolderCollection();
+    private View mEmptyView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_list);
         initRv();
+        mEmptyView = findViewById(R.id.empty_view);
         mVideoFolderCollection.onCreate(this, this);
         resolveStoragePermission();
     }
@@ -71,7 +74,19 @@ public class VideoFolderListActivity extends FragmentActivity implements VideoFo
 
     @Override
     public void onAlbumLoad(Cursor cursor) {
+        toggleEmptyView(cursor);
         mVideoFolderAdapter.swapCursor(cursor);
+    }
+
+    private void toggleEmptyView(Cursor cursor) {
+        if (cursor != null && !cursor.isClosed()) {
+            final int count = cursor.getCount();
+            if (count == 0) {
+                mEmptyView.setVisibility(View.VISIBLE);
+            } else {
+                mEmptyView.setVisibility(View.GONE);
+            }
+        }
     }
 
     @Override
