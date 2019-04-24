@@ -76,5 +76,18 @@
     <string name="need_storage_permission">需要存储权限</string>
     <string name="count_videos">个视频</string>
     <string name="empty_text">还没有视频</string>
+    <string name="rename">重命名</string>
+    <string name="delete">删除</string>
+    <string name="info">属性</string>
+    <string name="rename_to">重命名为</string>
+    <string name="sure">确定</string>
+    <string name="rename_success">重命名成功</string>
+    <string name="rename_fail">重命名失败</string>
+    <string name="file_not_exist_rename_fail">文件不存在，重命名失败</string>
+    <string name="delete_success">删除成功</string>
+    <string name="delete_fail">删除失败</string>
+    <string name="fileDoesntExist">文件不存在或者不是文件</string>
+    <string name="following_file_will_be_delete">下列文件将被删除。</string>
+    <string name="need_storage_permission_to_delete">需要存储权限才能删除</string>
 
 </resources>

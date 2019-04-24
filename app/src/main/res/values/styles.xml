@@ -7,6 +7,7 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
+
     <style name="Widget.App.ActionButton" parent="@style/Widget.AppCompat.ActionButton">
         <item name="textAllCaps">false</item>
     </style>
@@ -27,5 +28,32 @@
     <!--</style>-->
 
     <style name="FullscreenTheme" parent="Theme.App.NoActionBar">
+    </style>
+
+    <style name="bottomSheetItem">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:background">?selectableItemBackground</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+
+    <style name="bottomSheetItemIcon">
+        <item name="android:layout_width">40dp</item>
+        <item name="android:layout_height">40dp</item>
+        <item name="android:padding">6dp</item>
+        <item name="android:scaleType">centerCrop</item>
+    </style>
+
+    <style name="bottomSheetItemText">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginLeft">10dp</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textSize">15dp</item>
     </style>
 </resources>

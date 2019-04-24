@@ -11,15 +11,18 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import com.android.timlin.ivedioplayer.R;
+import com.android.timlin.ivedioplayer.common.BottomSheetDialog;
+import com.android.timlin.ivedioplayer.player.activities.VideoActivity;
 
 /**
  * Created by linjintian on 2019/4/23.
  */
-public class VideoItemListActivity extends FragmentActivity implements VideoItemCollection.VideoItemCallbacks {
+public class VideoItemListActivity extends FragmentActivity implements VideoItemCollection.VideoItemCallbacks, VideoItemAdapter.OnVideoItemClickListener, BottomSheetDialog.RefreshCallback {
     private static final String TAG = "VideoFolderListActivity";
     public static final String KEY_ID = "id";
     private final VideoItemCollection mVideoItemCollection = new VideoItemCollection();
     private VideoItemAdapter mVideoItemAdapter = new VideoItemAdapter();
+    private String mBuckedId;
 
     public static void startActivity(Context context, String id) {
         Intent intent = new Intent(context, VideoItemListActivity.class);
@@ -31,10 +34,11 @@ public class VideoItemListActivity extends FragmentActivity implements VideoItem
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_list);
-        final String id = getIntent().getStringExtra(KEY_ID);
+        mBuckedId = getIntent().getStringExtra(KEY_ID);
         initRv();
         mVideoItemCollection.onCreate(this, this);
-        mVideoItemCollection.load(id);
+        mVideoItemCollection.load(mBuckedId);
+        mVideoItemAdapter.setOnVideoItemClickListener(this);
     }
 
     @Override
@@ -58,5 +62,21 @@ public class VideoItemListActivity extends FragmentActivity implements VideoItem
     @Override
     public void onVideoItemsReset() {
         mVideoItemAdapter.swapCursor(null);
+    }
+
+    @Override
+    public void onItemClick(VideoItem videoItem) {
+        VideoActivity.intentTo(this, videoItem.uri, videoItem.displayName);
+    }
+
+    @Override
+    public void onMoreClick(VideoItem videoItem) {
+        BottomSheetDialog.newInstance(videoItem)
+                .show(getSupportFragmentManager(), this);
+    }
+
+    @Override
+    public void refresh() {
+        mVideoItemCollection.load(mBuckedId);
     }
 }

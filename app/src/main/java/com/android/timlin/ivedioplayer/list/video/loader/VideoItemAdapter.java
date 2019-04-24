@@ -15,7 +15,6 @@ import com.android.timlin.ivedioplayer.R;
 import com.android.timlin.ivedioplayer.common.GlideApp;
 import com.android.timlin.ivedioplayer.common.RecyclerViewCursorAdapter;
 import com.android.timlin.ivedioplayer.common.utils.ScreenUtil;
-import com.android.timlin.ivedioplayer.player.activities.VideoActivity;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
@@ -25,6 +24,7 @@ import com.bumptech.glide.request.RequestOptions;
  */
 public class VideoItemAdapter extends RecyclerViewCursorAdapter<VideoItemAdapter.MediaViewHolder> {
     private static final String TAG = "VideoFolderAdapter";
+    private OnVideoItemClickListener mOnVideoItemClickListener;
 
     public VideoItemAdapter() {
         super(null);
@@ -46,7 +46,11 @@ public class VideoItemAdapter extends RecyclerViewCursorAdapter<VideoItemAdapter
         return 0;
     }
 
-    static class MediaViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public void setOnVideoItemClickListener(OnVideoItemClickListener onVideoItemClickListener) {
+        mOnVideoItemClickListener = onVideoItemClickListener;
+    }
+
+    class MediaViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private VideoItem mVideoItem;
         private ImageView mIvVideoPreview;
@@ -59,6 +63,18 @@ public class VideoItemAdapter extends RecyclerViewCursorAdapter<VideoItemAdapter
             super(itemView);
             itemView.setOnClickListener(this);
             initView(itemView);
+            initMoreViewClickListener();
+        }
+
+        private void initMoreViewClickListener() {
+            mIvMore.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mOnVideoItemClickListener != null) {
+                        mOnVideoItemClickListener.onMoreClick(mVideoItem);
+                    }
+                }
+            });
         }
 
         void bindView(Cursor cursor) {
@@ -100,7 +116,9 @@ public class VideoItemAdapter extends RecyclerViewCursorAdapter<VideoItemAdapter
 
         @Override
         public void onClick(View v) {
-            VideoActivity.intentTo(v.getContext(), mVideoItem.uri, mVideoItem.displayName);
+            if (mOnVideoItemClickListener != null) {
+                mOnVideoItemClickListener.onItemClick(mVideoItem);
+            }
         }
 
         private void initView(View parent) {
@@ -109,5 +127,11 @@ public class VideoItemAdapter extends RecyclerViewCursorAdapter<VideoItemAdapter
             mTvName = parent.findViewById(R.id.mTvName);
             mIvMore = parent.findViewById(R.id.mIvMore);
         }
+    }
+
+    public interface OnVideoItemClickListener {
+        void onItemClick(VideoItem videoItem);
+
+        void onMoreClick(VideoItem videoItem);
     }
 }
