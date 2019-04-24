@@ -14,7 +14,10 @@ import android.widget.TextView;
 import com.android.timlin.ivedioplayer.R;
 import com.android.timlin.ivedioplayer.common.GlideApp;
 import com.android.timlin.ivedioplayer.common.RecyclerViewCursorAdapter;
+import com.android.timlin.ivedioplayer.common.utils.ScreenUtil;
 import com.android.timlin.ivedioplayer.player.activities.VideoActivity;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 
 /**
@@ -76,9 +79,9 @@ public class VideoItemAdapter extends RecyclerViewCursorAdapter<VideoItemAdapter
                     .asBitmap()
                     .load(mVideoItem.uri)
                     .apply(new RequestOptions()
-                            .override(80, 90)
-                            .placeholder(R.drawable.ic_placeholder)
-                            .centerCrop())
+                            .transform(new CenterCrop(), new RoundedCorners(ScreenUtil.INSTANCE.dip2px(6)))
+                            .override(mIvVideoPreview.getWidth(), mIvVideoPreview.getHeight())
+                            .placeholder(R.drawable.ic_placeholder))
                     .into(mIvVideoPreview);
         }
 

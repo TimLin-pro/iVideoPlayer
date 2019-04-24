@@ -83,7 +83,7 @@ public class TracksFragment extends Fragment {
                     TrackItem trackItem = (TrackItem) mTrackListView.getItemAtPosition(position);
                     for (int i = 0; i < mAdapter.getCount(); ++i) {
                         TrackItem compareItem = mAdapter.getItem(i);
-                        if (compareItem.mIndex == trackItem.mIndex)
+                        if (compareItem !=null && compareItem.mIndex == trackItem.mIndex)
                             continue;
 
                         if (compareItem.mTrackInfo.getTrackType() != trackItem.mTrackInfo.getTrackType())
