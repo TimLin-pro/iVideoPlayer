@@ -101,31 +101,30 @@ public class VideoItem implements Parcelable {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (!(obj instanceof VideoItem)) {
-            return false;
-        }
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
-        VideoItem other = (VideoItem) obj;
-        return id == other.id
-                && (mimeType != null && mimeType.equals(other.mimeType)
-                || (mimeType == null && other.mimeType == null))
-                && (uri != null && uri.equals(other.uri)
-                || (uri == null && other.uri == null))
-                && size == other.size
-                && duration == other.duration;
+        VideoItem videoItem = (VideoItem) o;
+
+        if (id != videoItem.id) return false;
+        if (size != videoItem.size) return false;
+        if (duration != videoItem.duration) return false;
+        if (mimeType != null ? !mimeType.equals(videoItem.mimeType) : videoItem.mimeType != null)
+            return false;
+        if (displayName != null ? !displayName.equals(videoItem.displayName) : videoItem.displayName != null)
+            return false;
+        return uri != null ? uri.equals(videoItem.uri) : videoItem.uri == null;
     }
 
     @Override
     public int hashCode() {
-        int result = 1;
-        result = 31 * result + Long.valueOf(id).hashCode();
-        if (mimeType != null) {
-            result = 31 * result + mimeType.hashCode();
-        }
-        result = 31 * result + uri.hashCode();
-        result = 31 * result + Long.valueOf(size).hashCode();
-        result = 31 * result + Long.valueOf(duration).hashCode();
+        int result = (int) (id ^ (id >>> 32));
+        result = 31 * result + (mimeType != null ? mimeType.hashCode() : 0);
+        result = 31 * result + (displayName != null ? displayName.hashCode() : 0);
+        result = 31 * result + (uri != null ? uri.hashCode() : 0);
+        result = 31 * result + (int) (size ^ (size >>> 32));
+        result = 31 * result + (int) (duration ^ (duration >>> 32));
         return result;
     }
 
@@ -134,6 +133,7 @@ public class VideoItem implements Parcelable {
         return "VideoItem{" +
                 "id=" + id +
                 ", mimeType='" + mimeType + '\'' +
+                ", displayName='" + displayName + '\'' +
                 ", uri=" + uri +
                 ", size=" + size +
                 ", duration=" + duration +

@@ -51,6 +51,9 @@ import tv.danmaku.ijk.media.player.misc.ITrackInfo;
 
 public class VideoActivity extends AppCompatActivity implements TracksFragment.ITrackHolder {
     private static final String TAG = "VideoActivity";
+    public static final String KEY_VIDEO_URI = "videoUri";
+    public static final String KEY_VIDEO_TITLE = "videoTitle";
+    public static final String KEY_VIDEO_PATH = "videoPath";
 
     private String mVideoPath;
     private Uri mVideoUri;
@@ -68,13 +71,20 @@ public class VideoActivity extends AppCompatActivity implements TracksFragment.I
 
     public static Intent newIntent(Context context, String videoPath, String videoTitle) {
         Intent intent = new Intent(context, VideoActivity.class);
-        intent.putExtra("videoPath", videoPath);
-        intent.putExtra("videoTitle", videoTitle);
+        intent.putExtra(KEY_VIDEO_PATH, videoPath);
+        intent.putExtra(KEY_VIDEO_TITLE, videoTitle);
         return intent;
     }
 
     public static void intentTo(Context context, String videoPath, String videoTitle) {
         context.startActivity(newIntent(context, videoPath, videoTitle));
+    }
+
+    public static void intentTo(Context context, Uri videoUri, String videoTitle) {
+        Intent intent = new Intent(context, VideoActivity.class);
+        intent.putExtra(KEY_VIDEO_URI, videoUri);
+        intent.putExtra(KEY_VIDEO_TITLE, videoTitle);
+        context.startActivity(intent);
     }
 
     @Override
@@ -85,7 +95,8 @@ public class VideoActivity extends AppCompatActivity implements TracksFragment.I
         mSettings = new Settings(this);
 
         // handle arguments
-        mVideoPath = getIntent().getStringExtra("videoPath");
+        mVideoPath = getIntent().getStringExtra(KEY_VIDEO_PATH);
+        mVideoUri = getIntent().getParcelableExtra(KEY_VIDEO_URI);
 
         Intent intent = getIntent();
         String intentAction = intent.getAction();
@@ -135,7 +146,7 @@ public class VideoActivity extends AppCompatActivity implements TracksFragment.I
         mVideoView.setMediaController(mMediaController);
         mVideoView.setHudView(mHudView);
         // prefer mVideoPath
-        if (mVideoPath != null)
+        if (!TextUtils.isEmpty(mVideoPath))
             mVideoView.setVideoPath(mVideoPath);
         else if (mVideoUri != null)
             mVideoView.setVideoURI(mVideoUri);

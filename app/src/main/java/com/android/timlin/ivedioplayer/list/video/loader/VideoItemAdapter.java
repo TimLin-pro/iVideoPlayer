@@ -95,10 +95,9 @@ public class VideoItemAdapter extends RecyclerViewCursorAdapter<VideoItemAdapter
 //            return mImageResize;
 //        }
 
-        //getPath 存在问题
         @Override
         public void onClick(View v) {
-            VideoActivity.intentTo(v.getContext(), mVideoItem.uri.getPath(), "title");
+            VideoActivity.intentTo(v.getContext(), mVideoItem.uri, mVideoItem.displayName);
         }
 
         private void initView(View parent) {
