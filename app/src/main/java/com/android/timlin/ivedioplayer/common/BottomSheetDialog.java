@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.timlin.ivedioplayer.R;
+import com.android.timlin.ivedioplayer.list.VideoInfoFragment;
 import com.android.timlin.ivedioplayer.common.utils.FileUtils;
 import com.android.timlin.ivedioplayer.common.utils.ScreenUtil;
 import com.android.timlin.ivedioplayer.list.video.loader.VideoItem;
@@ -37,9 +38,8 @@ import java.util.List;
  * Created by linjintian on 2019/4/24.
  */
 public class BottomSheetDialog extends DialogFragment implements View.OnClickListener {
-    public static final String CONTENT_SCHEME = "content://";
     private static final String TAG = "BottomSheetDialog";
-    public static final String KEY_VIDEO_ITEM = "name";
+    public static final String KEY_VIDEO_ITEM = "VIDEO_ITEM";
     private TextView mTvName;
     private LinearLayout mLlRename;
     private LinearLayout mLlInfo;
@@ -53,16 +53,6 @@ public class BottomSheetDialog extends DialogFragment implements View.OnClickLis
         BottomSheetDialog fragment = new BottomSheetDialog();
         fragment.setArguments(args);
         return fragment;
-    }
-
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
-        super.onViewStateRestored(savedInstanceState);
     }
 
     @NonNull
@@ -152,11 +142,17 @@ public class BottomSheetDialog extends DialogFragment implements View.OnClickLis
                 showRenameDialog();
                 break;
             case R.id.ll_info:
+                showInfoDialog();
                 break;
             case R.id.ll_delete:
                 showDeleteDialog();
                 break;
         }
+    }
+
+    private void showInfoDialog() {
+        VideoInfoFragment.newInstance(mVideoItem.uri)
+                .show(getFragmentManager());
     }
 
     private void showDeleteDialog() {
