@@ -89,5 +89,6 @@
     <string name="fileDoesntExist">文件不存在或者不是文件</string>
     <string name="following_file_will_be_delete">下列文件将被删除。</string>
     <string name="need_storage_permission_to_delete">需要存储权限才能删除</string>
+    <string name="multi_media_player">多功能视频播放器</string>
 
 </resources>

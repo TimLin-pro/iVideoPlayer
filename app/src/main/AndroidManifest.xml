@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools"
           package="com.android.timlin.ivedioplayer">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
@@ -9,10 +10,11 @@
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher_player"
-        android:label="@string/app_name"
+        android:label="@string/multi_media_player"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:replace="android:label">
         <activity android:name=".list.video.VideoListActivity">
         </activity>
         <activity android:name=".MainActivity">
@@ -31,18 +33,20 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:screenOrientation="user"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme"/>
         <activity
             android:name=".player.activities.VideoActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/app_name"
             android:exported="true"
+            android:label="@string/app_name"
             android:screenOrientation="user"
             android:theme="@style/FullscreenTheme">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
+
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
+
                 <data android:scheme="file"/>
                 <data android:scheme="content"/>
                 <data android:scheme="http"/>
@@ -52,40 +56,47 @@
                 <data android:mimeType="video/mp4"/>
             </intent-filter>
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="android.intent.action.VIEW"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
-                <data android:mimeType="video/*" />
-                <data android:mimeType="audio/*" />
-                <data android:scheme="http" />
-                <data android:scheme="file" />
+
+                <data android:mimeType="video/*"/>
+                <data android:mimeType="audio/*"/>
+                <data android:scheme="http"/>
+                <data android:scheme="file"/>
                 <data android:scheme="content"/>
             </intent-filter>
             <intent-filter>
-                <action android:name="android.intent.action.SEND" />
-                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="android.intent.action.SEND"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
 
-                <data android:mimeType="video/*" />
+                <data android:mimeType="video/*"/>
             </intent-filter>
         </activity>
 
         <activity android:name=".player.activities.FileExplorerActivity"/>
         <activity android:name=".list.file.loader.VideoFolderListActivity">
+        </activity>
+        <activity android:name=".list.video.loader.VideoItemListActivity"/>
+        <activity
+            android:name=".welcome.SplashActivity"
+            android:theme="@style/Theme.App.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".list.video.loader.VideoItemListActivity"/>
 
         <service
             android:name=".player.services.MediaPlayerService"
             android:enabled="false"
             android:exported="false"
             android:icon="@mipmap/ic_launcher"
-            android:label="@string/app_name" >
+            android:label="@string/app_name">
         </service>
     </application>
 
