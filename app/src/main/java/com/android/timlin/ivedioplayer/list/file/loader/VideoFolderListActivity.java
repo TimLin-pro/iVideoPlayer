@@ -12,6 +12,8 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.android.timlin.ivedioplayer.R;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.yanzhenjie.permission.Action;
 import com.yanzhenjie.permission.AndPermission;
 import com.yanzhenjie.permission.runtime.Permission;
@@ -27,15 +29,21 @@ public class VideoFolderListActivity extends FragmentActivity implements VideoFo
     private VideoFolderAdapter mVideoFolderAdapter = new VideoFolderAdapter();
     private VideoFolderCollection mVideoFolderCollection = new VideoFolderCollection();
     private View mEmptyView;
+    private RefreshLayout mRefreshLayout;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_list);
-        initRv();
-        mEmptyView = findViewById(R.id.empty_view);
+        initView();
         mVideoFolderCollection.onCreate(this, this);
         resolveStoragePermission();
+    }
+
+    private void initView() {
+        initRv();
+        mEmptyView = findViewById(R.id.empty_view);
+        initRefreshLayout();
     }
 
     private void resolveStoragePermission() {
@@ -46,7 +54,7 @@ public class VideoFolderListActivity extends FragmentActivity implements VideoFo
                     @Override
                     public void onAction(List<String> data) {
                         Log.d(TAG, "onGranted  onAction: " + Arrays.toString(data.toArray()));
-                        mVideoFolderCollection.loadVideoFolders();
+                        mVideoFolderCollection.startLoadVideoFolders();
                     }
                 })
                 .onDenied(new Action<List<String>>() {
@@ -66,6 +74,18 @@ public class VideoFolderListActivity extends FragmentActivity implements VideoFo
         recyclerView.setAdapter(mVideoFolderAdapter);
     }
 
+    private void initRefreshLayout() {
+        mRefreshLayout = findViewById(R.id.refreshLayout);
+        mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(RefreshLayout refreshlayout) {
+                Log.d(TAG, "onRefresh: ");
+                mVideoFolderCollection.reloadVideoFolders();
+            }
+        });
+    }
+
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -74,7 +94,9 @@ public class VideoFolderListActivity extends FragmentActivity implements VideoFo
 
     @Override
     public void onAlbumLoad(Cursor cursor) {
+        Log.d(TAG, "onAlbumLoad: ");
         toggleEmptyView(cursor);
+        mRefreshLayout.finishRefresh();
         mVideoFolderAdapter.swapCursor(cursor);
     }
 

@@ -26,6 +26,8 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.text.TextUtils;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.lang.ref.WeakReference;
 
 /**
@@ -85,10 +87,21 @@ public class VideoItemCollection implements LoaderManager.LoaderCallbacks<Cursor
         mCallbacks = null;
     }
 
-    public void load(@Nullable String id) {
+    public void startLoadVideoData(@Nullable String id) {
+        Bundle args = initArgs(id);
+        mLoaderManager.initLoader(LOADER_ID, args, this);
+    }
+
+    public void reloadVideoData(@Nullable String id) {
+        Bundle args = initArgs(id);
+        mLoaderManager.restartLoader(LOADER_ID, args, this);
+    }
+
+    @NotNull
+    private Bundle initArgs(@Nullable String id) {
         Bundle args = new Bundle();
         args.putString(ARGS_ID, id);
-        mLoaderManager.initLoader(LOADER_ID, args, this);
+        return args;
     }
 
     public interface VideoItemCallbacks {

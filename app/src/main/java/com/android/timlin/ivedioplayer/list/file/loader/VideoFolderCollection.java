@@ -79,8 +79,12 @@ public class VideoFolderCollection implements LoaderManager.LoaderCallbacks<Curs
         mCallbacks = null;
     }
 
-    public void loadVideoFolders() {
+    public void startLoadVideoFolders() {
         mLoaderManager.initLoader(LOADER_ID, null, this);
+    }
+
+    public void reloadVideoFolders() {
+        mLoaderManager.restartLoader(LOADER_ID, null, this);
     }
 
     public interface AlbumCallbacks {

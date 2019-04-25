@@ -13,6 +13,8 @@ import android.support.v7.widget.RecyclerView;
 import com.android.timlin.ivedioplayer.R;
 import com.android.timlin.ivedioplayer.common.BottomSheetDialog;
 import com.android.timlin.ivedioplayer.player.activities.VideoActivity;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 /**
  * Created by linjintian on 2019/4/23.
@@ -23,6 +25,7 @@ public class VideoItemListActivity extends FragmentActivity implements VideoItem
     private final VideoItemCollection mVideoItemCollection = new VideoItemCollection();
     private VideoItemAdapter mVideoItemAdapter = new VideoItemAdapter();
     private String mBuckedId;
+    private RefreshLayout mRefreshLayout;
 
     public static void startActivity(Context context, String id) {
         Intent intent = new Intent(context, VideoItemListActivity.class);
@@ -37,8 +40,31 @@ public class VideoItemListActivity extends FragmentActivity implements VideoItem
         mBuckedId = getIntent().getStringExtra(KEY_ID);
         initRv();
         mVideoItemCollection.onCreate(this, this);
-        mVideoItemCollection.load(mBuckedId);
-        mVideoItemAdapter.setOnVideoItemClickListener(this);
+        mVideoItemCollection.startLoadVideoData(mBuckedId);
+        initRefreshLayout();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(KEY_ID, mBuckedId);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        mBuckedId = savedInstanceState.getString(KEY_ID);
+
+    }
+
+    private void initRefreshLayout() {
+        mRefreshLayout = findViewById(R.id.refreshLayout);
+        mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(RefreshLayout refreshlayout) {
+                reloadVideoData();
+            }
+        });
     }
 
     @Override
@@ -48,6 +74,7 @@ public class VideoItemListActivity extends FragmentActivity implements VideoItem
     }
 
     private void initRv() {
+        mVideoItemAdapter.setOnVideoItemClickListener(this);
         RecyclerView recyclerView = findViewById(R.id.mVideoListRecyclerView);
         recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -56,6 +83,7 @@ public class VideoItemListActivity extends FragmentActivity implements VideoItem
 
     @Override
     public void onVideoItemsLoad(Cursor cursor) {
+        mRefreshLayout.finishRefresh(true);
         mVideoItemAdapter.swapCursor(cursor);
     }
 
@@ -77,6 +105,10 @@ public class VideoItemListActivity extends FragmentActivity implements VideoItem
 
     @Override
     public void refresh() {
-        mVideoItemCollection.load(mBuckedId);
+        reloadVideoData();
+    }
+
+    private void reloadVideoData() {
+        mVideoItemCollection.reloadVideoData(mBuckedId);
     }
 }
