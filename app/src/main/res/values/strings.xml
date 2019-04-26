@@ -91,5 +91,6 @@
     <string name="need_storage_permission_to_delete">需要存储权限才能删除</string>
     <string name="multi_media_player">多功能视频播放器</string>
     <string name="metadata_is_null">元数据为空</string>
+    <string name="all">全部</string>
 
 </resources>

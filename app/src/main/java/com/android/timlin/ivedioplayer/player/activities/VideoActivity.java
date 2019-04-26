@@ -22,6 +22,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
@@ -32,7 +33,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TableLayout;
 import android.widget.TextView;
@@ -41,6 +41,7 @@ import com.android.timlin.ivedioplayer.R;
 import com.android.timlin.ivedioplayer.player.application.Settings;
 import com.android.timlin.ivedioplayer.player.content.RecentMediaStorage;
 import com.android.timlin.ivedioplayer.player.fragments.TracksFragment;
+import com.android.timlin.ivedioplayer.player.subtitles.SubtitleController;
 import com.android.timlin.ivedioplayer.player.widget.media.AndroidMediaController;
 import com.android.timlin.ivedioplayer.player.widget.media.IjkVideoView;
 import com.android.timlin.ivedioplayer.player.widget.media.MeasureHelper;
@@ -68,6 +69,7 @@ public class VideoActivity extends AppCompatActivity implements TracksFragment.I
     private Settings mSettings;
     private boolean mBackPressed;
     private PlayerSpeedController mPlayerSpeedController;
+    private TextView mTvSrt;
 
     public static Intent newIntent(Context context, String videoPath, String videoTitle) {
         Intent intent = new Intent(context, VideoActivity.class);
@@ -119,23 +121,23 @@ public class VideoActivity extends AppCompatActivity implements TracksFragment.I
         ActionBar actionBar = getSupportActionBar();
         mMediaController = new AndroidMediaController(this, true);
         mMediaController.setSupportActionBar(actionBar);
-        mMediaController.setPrevNextListeners(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "onClick: next");
-            }
-        }, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "onClick: prev");
-            }
-        });
+//        mMediaController.setPrevNextListeners(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Log.d(TAG, "onClick: next");
+//            }
+//        }, new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Log.d(TAG, "onClick: prev");
+//            }
+//        });
 
         mToastTextView = findViewById(R.id.toast_text_view);
         mHudView = findViewById(R.id.hud_view);
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mRightDrawer = findViewById(R.id.right_drawer);
-
+        mTvSrt = findViewById(R.id.tv_srt);
         mDrawerLayout.setScrimColor(Color.TRANSPARENT);
 
         // init player
@@ -157,6 +159,13 @@ public class VideoActivity extends AppCompatActivity implements TracksFragment.I
         }
         mVideoView.start();
         mPlayerSpeedController = new PlayerSpeedController(mVideoView, getWindow().getDecorView());
+        initSubtitleController();
+    }
+
+    private void initSubtitleController() {
+        SubtitleController subtitleController = new SubtitleController(mTvSrt, mVideoView);
+        // TODO: 2019/4/26 read file path, avoid hard code
+        subtitleController.startDisplaySubtitle(Environment.getExternalStorageDirectory().getAbsolutePath() + "/f2.srt");
     }
 
     @Override

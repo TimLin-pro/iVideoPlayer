@@ -23,6 +23,8 @@ import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 
+import com.android.timlin.ivedioplayer.R;
+
 
 public class VideoFolder implements Parcelable {
     public static final Creator<VideoFolder> CREATOR = new Creator<VideoFolder>() {
@@ -102,7 +104,7 @@ public class VideoFolder implements Parcelable {
 
     public String getDisplayName(Context context) {
         if (isAll()) {
-            return "全部";
+            return context.getString(R.string.all);
         }
         return mDisplayName;
     }
