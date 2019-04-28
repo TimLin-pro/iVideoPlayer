@@ -100,10 +100,72 @@ public class VideoActivity extends AppCompatActivity implements TracksFragment.I
         mSettings = new Settings(this);
 
         // handle arguments
-        mVideoPath = getIntent().getStringExtra(KEY_VIDEO_PATH);
-        mVideoUri = getIntent().getParcelableExtra(KEY_VIDEO_URI);
+        initParamsFromIntent();
 
+        // init UI
+        ActionBar actionBar = initActionBar();
+        initMediaController(actionBar);
+
+        initView();
+
+        // init player
+        IjkMediaPlayer.loadLibrariesOnce(null);
+        IjkMediaPlayer.native_profileBegin("libijkplayer.so");
+
+        if (initVideoView()) return;
+//        mVideoView.start();
+        initPlayerManager();
+        initPlayerSpeedController();
+        initSubtitleController();
+    }
+
+    private void initView() {
+        mToastTextView = findViewById(R.id.toast_text_view);
+        mHudView = findViewById(R.id.hud_view);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
+        mRightDrawer = findViewById(R.id.right_drawer);
+        mTvSrt = findViewById(R.id.tv_srt);
+        mDrawerLayout.setScrimColor(Color.TRANSPARENT);
+        mVideoView = findViewById(R.id.video_view);
+    }
+
+    private boolean initVideoView() {
+        mVideoView.setMediaController(mMediaController);
+        mVideoView.setHudView(mHudView);
+        // prefer mVideoPath
+        if (!TextUtils.isEmpty(mVideoPath))
+            mVideoView.setVideoPath(mVideoPath);
+        else if (mVideoUri != null)
+            mVideoView.setVideoURI(mVideoUri);
+        else {
+            Log.e(TAG, "Null Data Source\n");
+            finish();
+            return true;
+        }
+        return false;
+    }
+
+    private void initPlayerSpeedController() {
+        mPlayerSpeedController = new PlayerSpeedController(mVideoView, getWindow().getDecorView());
+    }
+
+    private void initMediaController(ActionBar actionBar) {
+        mMediaController = new AndroidMediaController(this, true);
+        mMediaController.setSupportActionBar(actionBar);
+    }
+
+    private ActionBar initActionBar() {
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        return getSupportActionBar();
+    }
+
+    private void initParamsFromIntent() {
         Intent intent = getIntent();
+        mVideoPath = intent.getStringExtra(KEY_VIDEO_PATH);
+        mVideoUri = intent.getParcelableExtra(KEY_VIDEO_URI);
+
         String intentAction = intent.getAction();
         if (!TextUtils.isEmpty(intentAction)) {
             if (intentAction.equals(Intent.ACTION_VIEW)) {
@@ -116,54 +178,6 @@ public class VideoActivity extends AppCompatActivity implements TracksFragment.I
         if (!TextUtils.isEmpty(mVideoPath)) {
             new RecentMediaStorage(this).saveUrlAsync(mVideoPath);
         }
-
-        // init UI
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        ActionBar actionBar = getSupportActionBar();
-//        mMediaController = new AndroidMediaController(this, true);
-//        mMediaController.setSupportActionBar(actionBar);
-//        mMediaController.setPrevNextListeners(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Log.d(TAG, "onClick: next");
-//            }
-//        }, new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Log.d(TAG, "onClick: prev");
-//            }
-//        });
-
-        mToastTextView = findViewById(R.id.toast_text_view);
-        mHudView = findViewById(R.id.hud_view);
-        mDrawerLayout = findViewById(R.id.drawer_layout);
-        mRightDrawer = findViewById(R.id.right_drawer);
-        mTvSrt = findViewById(R.id.tv_srt);
-        mDrawerLayout.setScrimColor(Color.TRANSPARENT);
-
-        // init player
-        IjkMediaPlayer.loadLibrariesOnce(null);
-        IjkMediaPlayer.native_profileBegin("libijkplayer.so");
-
-        mVideoView = findViewById(R.id.video_view);
-//        mVideoView.setMediaController(mMediaController);
-        mVideoView.setHudView(mHudView);
-        // prefer mVideoPath
-        if (!TextUtils.isEmpty(mVideoPath))
-            mVideoView.setVideoPath(mVideoPath);
-        else if (mVideoUri != null)
-            mVideoView.setVideoURI(mVideoUri);
-        else {
-            Log.e(TAG, "Null Data Source\n");
-            finish();
-            return;
-        }
-//        mVideoView.start();
-        initPlayer();
-        mPlayerSpeedController = new PlayerSpeedController(mVideoView, getWindow().getDecorView());
-        initSubtitleController();
     }
 
     private void initSubtitleController() {
@@ -172,7 +186,7 @@ public class VideoActivity extends AppCompatActivity implements TracksFragment.I
         subtitleController.startDisplaySubtitle(Environment.getExternalStorageDirectory().getAbsolutePath() + "/f2.srt");
     }
 
-    private void initPlayer() {
+    private void initPlayerManager() {
         mPlayerManager = new PlayerManager(this);
         mPlayerManager.setFullScreenOnly(true);
 //        mPlayerManager.setScaleType(PlayerManager.SCALETYPE_FILLPARENT);
