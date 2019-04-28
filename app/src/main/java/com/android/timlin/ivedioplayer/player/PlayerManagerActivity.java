@@ -9,9 +9,9 @@
 ///**
 // * Created by linjintian on 2019/4/27.
 // */
-//public class PlayerManagerActivity extends AppCompatActivity implements PlayerManager.PlayerStateListener {
+//public class PlayerManagerActivity extends AppCompatActivity implements VideoGestureManager.PlayerStateListener {
 //    private String url1 = "rtmp://203.207.99.19:1935/live/CCTV5";
-//    private PlayerManager mPlayerManager;
+//    private VideoGestureManager mPlayerManager;
 //
 //    @Override
 //    protected void onCreate(Bundle savedInstanceState) {
@@ -21,9 +21,9 @@
 //    }
 //
 //    private void initPlayer() {
-//        mPlayerManager = new PlayerManager(this);
+//        mPlayerManager = new VideoGestureManager(this);
 //        mPlayerManager.setFullScreenOnly(true);
-////        mPlayerManager.setScaleType(PlayerManager.SCALETYPE_FILLPARENT);
+////        mPlayerManager.setScaleType(VideoGestureManager.SCALETYPE_FILLPARENT);
 //        mPlayerManager.playInFullScreen(true);
 //        mPlayerManager.setPlayerStateListener(this);
 //        mPlayerManager.play(url1);
@@ -53,12 +53,12 @@
 //    }
 //}
 //
-//class MainActivity extends AppCompatActivity implements PlayerManager.PlayerStateListener {
+//class MainActivity extends AppCompatActivity implements VideoGestureManager.PlayerStateListener {
 //    private String url1 = "rtmp://203.207.99.19:1935/live/CCTV5";
 //    private String url2 = "http://zv.3gv.ifeng.com/live/zhongwen800k.m3u8";
 //    private String url3 = "rtsp://184.72.239.149/vod/mp4:BigBuckBunny_115k.mov";
 //    private String url4 = "http://42.96.249.166/live/24035.m3u8";
-//    private PlayerManager player;
+//    private VideoGestureManager player;
 //
 //    @Override
 //    protected void onCreate(Bundle savedInstanceState) {
@@ -68,9 +68,9 @@
 //    }
 //
 //    private void initPlayer() {
-//        player = new PlayerManager(this);
+//        player = new VideoGestureManager(this);
 //        player.setFullScreenOnly(true);
-////        mPlayerManager.setScaleType(PlayerManager.SCALETYPE_FILLPARENT);
+////        mPlayerManager.setScaleType(VideoGestureManager.SCALETYPE_FILLPARENT);
 //        player.playInFullScreen(true);
 //        player.setPlayerStateListener(this);
 //        player.play(url1);

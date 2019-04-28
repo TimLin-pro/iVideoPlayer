@@ -39,7 +39,7 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 
 import com.android.timlin.ivedioplayer.R;
-import com.android.timlin.ivedioplayer.player.PlayerManager;
+import com.android.timlin.ivedioplayer.player.VideoGestureManager;
 import com.android.timlin.ivedioplayer.player.application.Settings;
 import com.android.timlin.ivedioplayer.player.content.RecentMediaStorage;
 import com.android.timlin.ivedioplayer.player.fragments.TracksFragment;
@@ -52,7 +52,7 @@ import com.android.timlin.ivedioplayer.player.widget.media.PlayerSpeedController
 import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 import tv.danmaku.ijk.media.player.misc.ITrackInfo;
 
-public class VideoActivity extends AppCompatActivity implements TracksFragment.ITrackHolder, PlayerManager.PlayerStateListener {
+public class VideoActivity extends AppCompatActivity implements TracksFragment.ITrackHolder {
     private static final String TAG = "VideoActivity";
     public static final String KEY_VIDEO_URI = "videoUri";
     public static final String KEY_VIDEO_TITLE = "videoTitle";
@@ -72,7 +72,7 @@ public class VideoActivity extends AppCompatActivity implements TracksFragment.I
     private boolean mBackPressed;
     private PlayerSpeedController mPlayerSpeedController;
     private TextView mTvSrt;
-    private PlayerManager mPlayerManager;
+    private VideoGestureManager mVideoGestureManager;
 
     public static Intent newIntent(Context context, String videoPath, String videoTitle) {
         Intent intent = new Intent(context, VideoActivity.class);
@@ -113,8 +113,7 @@ public class VideoActivity extends AppCompatActivity implements TracksFragment.I
         IjkMediaPlayer.native_profileBegin("libijkplayer.so");
 
         if (initVideoView()) return;
-//        mVideoView.start();
-        initPlayerManager();
+        initVideoGestureManager();
         initPlayerSpeedController();
         initSubtitleController();
     }
@@ -142,6 +141,7 @@ public class VideoActivity extends AppCompatActivity implements TracksFragment.I
             finish();
             return true;
         }
+        mVideoView.start();
         return false;
     }
 
@@ -186,18 +186,13 @@ public class VideoActivity extends AppCompatActivity implements TracksFragment.I
         subtitleController.startDisplaySubtitle(Environment.getExternalStorageDirectory().getAbsolutePath() + "/f2.srt");
     }
 
-    private void initPlayerManager() {
-        mPlayerManager = new PlayerManager(this);
-        mPlayerManager.setFullScreenOnly(true);
-//        mPlayerManager.setScaleType(PlayerManager.SCALETYPE_FILLPARENT);
-        mPlayerManager.playInFullScreen(true);
-        mPlayerManager.setPlayerStateListener(this);
-        mPlayerManager.play(mVideoUri);
+    private void initVideoGestureManager() {
+        mVideoGestureManager = new VideoGestureManager(this);
     }
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        if (mPlayerManager.mGestureDetector.onTouchEvent(ev))
+        if (mVideoGestureManager.mGestureDetector.onTouchEvent(ev))
             return true;
         return super.dispatchTouchEvent(ev);
     }
@@ -303,25 +298,5 @@ public class VideoActivity extends AppCompatActivity implements TracksFragment.I
             return -1;
 
         return mVideoView.getSelectedTrack(trackType);
-    }
-
-    @Override
-    public void onComplete() {
-
-    }
-
-    @Override
-    public void onError() {
-
-    }
-
-    @Override
-    public void onLoading() {
-
-    }
-
-    @Override
-    public void onPlay() {
-
     }
 }
