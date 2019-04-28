@@ -118,6 +118,12 @@ public class VideoActivity extends AppCompatActivity implements TracksFragment.I
         initSubtitleController();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+//        mVideoView.resume();
+    }
+
     private void initView() {
         mToastTextView = findViewById(R.id.toast_text_view);
         mHudView = findViewById(R.id.hud_view);
@@ -134,9 +140,9 @@ public class VideoActivity extends AppCompatActivity implements TracksFragment.I
         // prefer mVideoPath
         if (!TextUtils.isEmpty(mVideoPath))
             mVideoView.setVideoPath(mVideoPath);
-        else if (mVideoUri != null)
+        else if (mVideoUri != null) {
             mVideoView.setVideoURI(mVideoUri);
-        else {
+        } else {
             Log.e(TAG, "Null Data Source\n");
             finish();
             return true;

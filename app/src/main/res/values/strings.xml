@@ -92,5 +92,7 @@
     <string name="multi_media_player">多功能视频播放器</string>
     <string name="metadata_is_null">元数据为空</string>
     <string name="all">全部</string>
+    <string name="please_enter_video_address">请输入视频的地址</string>
+    <string name="address_cannot_be_empty">网址不能为空</string>
 
 </resources>

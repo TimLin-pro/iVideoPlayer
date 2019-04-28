@@ -43,7 +43,7 @@ class FileListAdapter : RecyclerView.Adapter<FileListAdapter.VideoFileViewHolder
 
         fun bindView(fileEntry: FileEntry) {
             mTvPath.text = fileEntry.path
-            mTvCount.text = "${fileEntry.count}个视频文件"
+            mTvCount.text = "${fileEntry.count} 个视频文件"
         }
     }
 

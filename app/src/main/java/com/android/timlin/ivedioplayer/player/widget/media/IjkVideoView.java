@@ -127,7 +127,7 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
     private long mSeekStartTime = 0;
     private long mSeekEndTime = 0;
 
-    private TextView mSubtitleDisplay;
+    private TextView mTvSubtitles;
     private MediaInfoManager mMediaInfoManager;
 
     public IjkVideoView(Context context) {
@@ -174,14 +174,14 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
         mCurrentState = STATE_IDLE;
         mTargetState = STATE_IDLE;
 
-        mSubtitleDisplay = new TextView(context);
-        mSubtitleDisplay.setTextSize(24);
-        mSubtitleDisplay.setGravity(Gravity.CENTER);
+        mTvSubtitles = new TextView(context);
+        mTvSubtitles.setTextSize(24);
+        mTvSubtitles.setGravity(Gravity.CENTER);
         FrameLayout.LayoutParams layoutParams_txt = new FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT,
                 FrameLayout.LayoutParams.WRAP_CONTENT,
                 Gravity.BOTTOM);
-        addView(mSubtitleDisplay, layoutParams_txt);
+        addView(mTvSubtitles, layoutParams_txt);
     }
 
     public void setRenderView(IRenderView renderView) {
@@ -276,7 +276,7 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
      *                "android-allow-cross-domain-redirect" as the key and "0" or "1" as the value
      *                to disallow or allow cross domain redirection.
      */
-    private void setVideoURI(Uri uri, Map<String, String> headers) {
+    public void setVideoURI(Uri uri, Map<String, String> headers) {
         mUri = uri;
         mHeaders = headers;
         mSeekWhenPrepared = 0;
@@ -598,11 +598,16 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
         }
     };
 
+    /**
+     * 内置字幕？
+     */
     private IMediaPlayer.OnTimedTextListener mOnTimedTextListener = new IMediaPlayer.OnTimedTextListener() {
         @Override
         public void onTimedText(IMediaPlayer mp, IjkTimedText text) {
+            final String timeTextStr = text.getText();
+            Log.d(TAG, "onTimedText: " + timeTextStr);
             if (text != null) {
-                mSubtitleDisplay.setText(text.getText());
+                mTvSubtitles.setText(timeTextStr);
             }
         }
     };
@@ -752,14 +757,7 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        boolean isKeyCodeSupported = keyCode != KeyEvent.KEYCODE_BACK &&
-                keyCode != KeyEvent.KEYCODE_VOLUME_UP &&
-                keyCode != KeyEvent.KEYCODE_VOLUME_DOWN &&
-                keyCode != KeyEvent.KEYCODE_VOLUME_MUTE &&
-                keyCode != KeyEvent.KEYCODE_MENU &&
-                keyCode != KeyEvent.KEYCODE_CALL &&
-                keyCode != KeyEvent.KEYCODE_ENDCALL;
-        if (isInPlaybackState() && isKeyCodeSupported && mMediaController != null) {
+        if (isInPlaybackState() && isKeyCodeSupported(keyCode) && mMediaController != null) {
             if (keyCode == KeyEvent.KEYCODE_HEADSETHOOK ||
                     keyCode == KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE) {
                 if (mMediaPlayer.isPlaying()) {
@@ -784,11 +782,21 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
                 }
                 return true;
             } else {
-                toggleMediaControlsVisiblity();
+//                toggleMediaControlsVisiblity();
             }
         }
 
         return super.onKeyDown(keyCode, event);
+    }
+
+    private boolean isKeyCodeSupported(int keyCode) {
+        return keyCode != KeyEvent.KEYCODE_BACK &&
+                keyCode != KeyEvent.KEYCODE_VOLUME_UP &&
+                keyCode != KeyEvent.KEYCODE_VOLUME_DOWN &&
+                keyCode != KeyEvent.KEYCODE_VOLUME_MUTE &&
+                keyCode != KeyEvent.KEYCODE_MENU &&
+                keyCode != KeyEvent.KEYCODE_CALL &&
+                keyCode != KeyEvent.KEYCODE_ENDCALL;
     }
 
     private void toggleMediaControlsVisiblity() {

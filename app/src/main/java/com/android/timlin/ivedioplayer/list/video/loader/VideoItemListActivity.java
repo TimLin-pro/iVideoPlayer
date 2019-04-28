@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,6 +13,7 @@ import android.support.v7.widget.RecyclerView;
 
 import com.android.timlin.ivedioplayer.R;
 import com.android.timlin.ivedioplayer.common.BottomSheetDialog;
+import com.android.timlin.ivedioplayer.common.VideoAddressInputHelper;
 import com.android.timlin.ivedioplayer.player.activities.VideoActivity;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
@@ -26,6 +28,7 @@ public class VideoItemListActivity extends FragmentActivity implements VideoItem
     private VideoItemAdapter mVideoItemAdapter = new VideoItemAdapter();
     private String mBuckedId;
     private RefreshLayout mRefreshLayout;
+    private FloatingActionButton mFab;
 
     public static void startActivity(Context context, String id) {
         Intent intent = new Intent(context, VideoItemListActivity.class);
@@ -42,6 +45,12 @@ public class VideoItemListActivity extends FragmentActivity implements VideoItem
         mVideoItemCollection.onCreate(this, this);
         mVideoItemCollection.startLoadVideoData(mBuckedId);
         initRefreshLayout();
+        initVideoInputBtn();
+    }
+
+    private void initVideoInputBtn() {
+        mFab = findViewById(R.id.fab);
+        new VideoAddressInputHelper(mFab);
     }
 
     @Override

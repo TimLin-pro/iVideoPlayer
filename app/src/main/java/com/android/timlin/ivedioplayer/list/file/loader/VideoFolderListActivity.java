@@ -3,6 +3,7 @@ package com.android.timlin.ivedioplayer.list.file.loader;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.android.timlin.ivedioplayer.R;
+import com.android.timlin.ivedioplayer.common.VideoAddressInputHelper;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.yanzhenjie.permission.Action;
@@ -44,6 +46,12 @@ public class VideoFolderListActivity extends FragmentActivity implements VideoFo
         initRv();
         mEmptyView = findViewById(R.id.empty_view);
         initRefreshLayout();
+        initVideoInputBtn();
+    }
+
+    private void initVideoInputBtn() {
+        FloatingActionButton fab = findViewById(R.id.fab);
+        new VideoAddressInputHelper(fab);
     }
 
     private void resolveStoragePermission() {
