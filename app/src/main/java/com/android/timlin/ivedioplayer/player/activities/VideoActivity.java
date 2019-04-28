@@ -33,11 +33,13 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.ViewGroup;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
 import com.android.timlin.ivedioplayer.R;
+import com.android.timlin.ivedioplayer.player.PlayerManager;
 import com.android.timlin.ivedioplayer.player.application.Settings;
 import com.android.timlin.ivedioplayer.player.content.RecentMediaStorage;
 import com.android.timlin.ivedioplayer.player.fragments.TracksFragment;
@@ -50,7 +52,7 @@ import com.android.timlin.ivedioplayer.player.widget.media.PlayerSpeedController
 import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 import tv.danmaku.ijk.media.player.misc.ITrackInfo;
 
-public class VideoActivity extends AppCompatActivity implements TracksFragment.ITrackHolder {
+public class VideoActivity extends AppCompatActivity implements TracksFragment.ITrackHolder, PlayerManager.PlayerStateListener {
     private static final String TAG = "VideoActivity";
     public static final String KEY_VIDEO_URI = "videoUri";
     public static final String KEY_VIDEO_TITLE = "videoTitle";
@@ -70,6 +72,7 @@ public class VideoActivity extends AppCompatActivity implements TracksFragment.I
     private boolean mBackPressed;
     private PlayerSpeedController mPlayerSpeedController;
     private TextView mTvSrt;
+    private PlayerManager mPlayerManager;
 
     public static Intent newIntent(Context context, String videoPath, String videoTitle) {
         Intent intent = new Intent(context, VideoActivity.class);
@@ -119,8 +122,8 @@ public class VideoActivity extends AppCompatActivity implements TracksFragment.I
         setSupportActionBar(toolbar);
 
         ActionBar actionBar = getSupportActionBar();
-        mMediaController = new AndroidMediaController(this, true);
-        mMediaController.setSupportActionBar(actionBar);
+//        mMediaController = new AndroidMediaController(this, true);
+//        mMediaController.setSupportActionBar(actionBar);
 //        mMediaController.setPrevNextListeners(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
@@ -145,7 +148,7 @@ public class VideoActivity extends AppCompatActivity implements TracksFragment.I
         IjkMediaPlayer.native_profileBegin("libijkplayer.so");
 
         mVideoView = findViewById(R.id.video_view);
-        mVideoView.setMediaController(mMediaController);
+//        mVideoView.setMediaController(mMediaController);
         mVideoView.setHudView(mHudView);
         // prefer mVideoPath
         if (!TextUtils.isEmpty(mVideoPath))
@@ -157,7 +160,8 @@ public class VideoActivity extends AppCompatActivity implements TracksFragment.I
             finish();
             return;
         }
-        mVideoView.start();
+//        mVideoView.start();
+        initPlayer();
         mPlayerSpeedController = new PlayerSpeedController(mVideoView, getWindow().getDecorView());
         initSubtitleController();
     }
@@ -166,6 +170,22 @@ public class VideoActivity extends AppCompatActivity implements TracksFragment.I
         SubtitleController subtitleController = new SubtitleController(mTvSrt, mVideoView);
         // TODO: 2019/4/26 read file path, avoid hard code
         subtitleController.startDisplaySubtitle(Environment.getExternalStorageDirectory().getAbsolutePath() + "/f2.srt");
+    }
+
+    private void initPlayer() {
+        mPlayerManager = new PlayerManager(this);
+        mPlayerManager.setFullScreenOnly(true);
+//        mPlayerManager.setScaleType(PlayerManager.SCALETYPE_FILLPARENT);
+        mPlayerManager.playInFullScreen(true);
+        mPlayerManager.setPlayerStateListener(this);
+        mPlayerManager.play(mVideoUri);
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (mPlayerManager.mGestureDetector.onTouchEvent(ev))
+            return true;
+        return super.dispatchTouchEvent(ev);
     }
 
     @Override
@@ -269,5 +289,25 @@ public class VideoActivity extends AppCompatActivity implements TracksFragment.I
             return -1;
 
         return mVideoView.getSelectedTrack(trackType);
+    }
+
+    @Override
+    public void onComplete() {
+
+    }
+
+    @Override
+    public void onError() {
+
+    }
+
+    @Override
+    public void onLoading() {
+
+    }
+
+    @Override
+    public void onPlay() {
+
     }
 }

@@ -128,7 +128,7 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
     private long mSeekStartTime = 0;
     private long mSeekEndTime = 0;
 
-    private TextView subtitleDisplay;
+    private TextView mSubtitleDisplay;
 
     public IjkVideoView(Context context) {
         super(context);
@@ -174,14 +174,14 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
         mCurrentState = STATE_IDLE;
         mTargetState = STATE_IDLE;
 
-        subtitleDisplay = new TextView(context);
-        subtitleDisplay.setTextSize(24);
-        subtitleDisplay.setGravity(Gravity.CENTER);
+        mSubtitleDisplay = new TextView(context);
+        mSubtitleDisplay.setTextSize(24);
+        mSubtitleDisplay.setGravity(Gravity.CENTER);
         FrameLayout.LayoutParams layoutParams_txt = new FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT,
                 FrameLayout.LayoutParams.WRAP_CONTENT,
                 Gravity.BOTTOM);
-        addView(subtitleDisplay, layoutParams_txt);
+        addView(mSubtitleDisplay, layoutParams_txt);
     }
 
     public void setRenderView(IRenderView renderView) {
@@ -602,7 +602,7 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
         @Override
         public void onTimedText(IMediaPlayer mp, IjkTimedText text) {
             if (text != null) {
-                subtitleDisplay.setText(text.getText());
+                mSubtitleDisplay.setText(text.getText());
             }
         }
     };
