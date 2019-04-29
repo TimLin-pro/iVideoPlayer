@@ -27,25 +27,31 @@ import android.widget.MediaController;
 
 import java.util.ArrayList;
 
-public class AndroidMediaController extends MediaController implements IMediaController {
+public class IjkMediaController extends MediaController implements IMediaController {
     private ActionBar mActionBar;
+    public static final int SHOW_TIME_OUT = 5000;
 
-    public AndroidMediaController(Context context, AttributeSet attrs) {
+    public IjkMediaController(Context context, AttributeSet attrs) {
         super(context, attrs);
         initView(context);
     }
 
-    public AndroidMediaController(Context context, boolean useFastForward) {
+    public IjkMediaController(Context context, boolean useFastForward) {
         super(context, useFastForward);
         initView(context);
     }
 
-    public AndroidMediaController(Context context) {
+    public IjkMediaController(Context context) {
         super(context);
         initView(context);
     }
 
     private void initView(Context context) {
+    }
+
+    @Override
+    public void setAnchorView(View view) {
+        super.setAnchorView(view);
     }
 
     public void setSupportActionBar(@Nullable ActionBar actionBar) {
@@ -61,7 +67,7 @@ public class AndroidMediaController extends MediaController implements IMediaCon
 
     @Override
     public void show() {
-        super.show();
+        super.show(SHOW_TIME_OUT);
         if (mActionBar != null)
             mActionBar.show();
     }

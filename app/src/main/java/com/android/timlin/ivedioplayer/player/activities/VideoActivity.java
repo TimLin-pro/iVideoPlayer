@@ -44,7 +44,7 @@ import com.android.timlin.ivedioplayer.player.application.Settings;
 import com.android.timlin.ivedioplayer.player.content.RecentMediaStorage;
 import com.android.timlin.ivedioplayer.player.fragments.TracksFragment;
 import com.android.timlin.ivedioplayer.player.subtitles.SubtitleController;
-import com.android.timlin.ivedioplayer.player.widget.media.AndroidMediaController;
+import com.android.timlin.ivedioplayer.player.widget.media.IjkMediaController;
 import com.android.timlin.ivedioplayer.player.widget.media.IjkVideoView;
 import com.android.timlin.ivedioplayer.player.widget.media.MeasureHelper;
 import com.android.timlin.ivedioplayer.player.widget.media.PlayerSpeedController;
@@ -61,7 +61,7 @@ public class VideoActivity extends AppCompatActivity implements TracksFragment.I
     private String mVideoPath;
     private Uri mVideoUri;
 
-    private AndroidMediaController mMediaController;
+    private IjkMediaController mMediaController;
     private IjkVideoView mVideoView;
     private TextView mToastTextView;
     private TableLayout mHudView;
@@ -156,7 +156,7 @@ public class VideoActivity extends AppCompatActivity implements TracksFragment.I
     }
 
     private void initMediaController(ActionBar actionBar) {
-        mMediaController = new AndroidMediaController(this, true);
+        mMediaController = new IjkMediaController(this, true);
         mMediaController.setSupportActionBar(actionBar);
     }
 

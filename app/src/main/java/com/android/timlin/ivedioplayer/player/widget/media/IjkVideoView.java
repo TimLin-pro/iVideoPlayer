@@ -20,7 +20,6 @@ package com.android.timlin.ivedioplayer.player.widget.media;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.res.Resources;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -553,7 +552,6 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
                      * longer have a window, don't bother showing the user an error.
                      */
                     if (getWindowToken() != null) {
-                        Resources r = mAppContext.getResources();
                         int messageId;
 
                         if (framework_err == MediaPlayer.MEDIA_ERROR_NOT_VALID_FOR_PROGRESSIVE_PLAYBACK) {
@@ -742,7 +740,7 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         if (isInPlaybackState() && mMediaController != null) {
-            toggleMediaControlsVisiblity();
+            toggleMediaControlsVisibility();
         }
         return false;
     }
@@ -750,7 +748,7 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
     @Override
     public boolean onTrackballEvent(MotionEvent ev) {
         if (isInPlaybackState() && mMediaController != null) {
-            toggleMediaControlsVisiblity();
+            toggleMediaControlsVisibility();
         }
         return false;
     }
@@ -782,7 +780,7 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
                 }
                 return true;
             } else {
-//                toggleMediaControlsVisiblity();
+                toggleMediaControlsVisibility();
             }
         }
 
@@ -799,7 +797,7 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
                 keyCode != KeyEvent.KEYCODE_ENDCALL;
     }
 
-    private void toggleMediaControlsVisiblity() {
+    private void toggleMediaControlsVisibility() {
         if (mMediaController.isShowing()) {
             mMediaController.hide();
         } else {

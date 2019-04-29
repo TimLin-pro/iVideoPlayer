@@ -202,7 +202,7 @@ public class VideoGestureManager {
 
         @Override
         public boolean onDoubleTap(MotionEvent e) {
-            mVideoView.toggleAspectRatio();
+//            mVideoView.toggleAspectRatio();
             return true;
         }
 
