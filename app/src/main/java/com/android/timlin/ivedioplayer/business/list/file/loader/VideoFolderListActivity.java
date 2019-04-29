@@ -4,7 +4,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -26,7 +26,7 @@ import java.util.List;
 /**
  * Created by linjintian on 2019/4/23.
  */
-public class VideoFolderListActivity extends FragmentActivity implements VideoFolderCollection.AlbumCallbacks {
+public class VideoFolderListActivity extends AppCompatActivity implements VideoFolderCollection.AlbumCallbacks {
     private static final String TAG = "VideoFolderListActivity";
     private VideoFolderAdapter mVideoFolderAdapter = new VideoFolderAdapter();
     private VideoFolderCollection mVideoFolderCollection = new VideoFolderCollection();

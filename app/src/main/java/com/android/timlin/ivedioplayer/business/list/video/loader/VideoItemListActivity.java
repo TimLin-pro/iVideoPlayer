@@ -6,22 +6,22 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import com.android.timlin.ivedioplayer.R;
+import com.android.timlin.ivedioplayer.business.player.activities.VideoActivity;
 import com.android.timlin.ivedioplayer.common.BottomSheetDialog;
 import com.android.timlin.ivedioplayer.common.VideoAddressInputHelper;
-import com.android.timlin.ivedioplayer.business.player.activities.VideoActivity;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 /**
  * Created by linjintian on 2019/4/23.
  */
-public class VideoItemListActivity extends FragmentActivity implements VideoItemCollection.VideoItemCallbacks, VideoItemAdapter.OnVideoItemClickListener, BottomSheetDialog.RefreshCallback {
+public class VideoItemListActivity extends AppCompatActivity implements VideoItemCollection.VideoItemCallbacks, VideoItemAdapter.OnVideoItemClickListener, BottomSheetDialog.RefreshCallback {
     private static final String TAG = "VideoFolderListActivity";
     public static final String KEY_ID = "id";
     private final VideoItemCollection mVideoItemCollection = new VideoItemCollection();

@@ -173,12 +173,16 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
         mCurrentState = STATE_IDLE;
         mTargetState = STATE_IDLE;
 
+        initSubtitlesView(context);
+    }
+
+    private void initSubtitlesView(Context context) {
         mTvSubtitles = new TextView(context);
         mTvSubtitles.setTextSize(24);
         mTvSubtitles.setGravity(Gravity.CENTER);
-        FrameLayout.LayoutParams layoutParams_txt = new FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.MATCH_PARENT,
-                FrameLayout.LayoutParams.WRAP_CONTENT,
+        LayoutParams layoutParams_txt = new LayoutParams(
+                LayoutParams.MATCH_PARENT,
+                LayoutParams.WRAP_CONTENT,
                 Gravity.BOTTOM);
         addView(mTvSubtitles, layoutParams_txt);
     }
