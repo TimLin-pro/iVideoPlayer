@@ -3,7 +3,7 @@ package com.android.timlin.ivedioplayer;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-import com.android.timlin.ivedioplayer.list.file.FileListFragment;
+import com.android.timlin.ivedioplayer.business.list.file.FileListFragment;
 
 public class MainActivity extends AppCompatActivity {
 

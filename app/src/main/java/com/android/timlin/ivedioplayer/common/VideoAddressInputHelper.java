@@ -10,7 +10,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.android.timlin.ivedioplayer.R;
-import com.android.timlin.ivedioplayer.player.activities.VideoActivity;
+import com.android.timlin.ivedioplayer.business.player.activities.VideoActivity;
 
 /**
  * Created by linjintian on 2019/4/28.

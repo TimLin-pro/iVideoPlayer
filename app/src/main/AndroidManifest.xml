@@ -16,27 +16,27 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:label">
-        <activity android:name=".list.video.VideoListActivity">
+        <activity android:name="com.android.timlin.ivedioplayer.business.list.video.VideoListActivity">
         </activity>
         <activity android:name=".MainActivity">
 
         </activity>
 
         <activity
-            android:name=".player.activities.RecentMediaActivity"
+            android:name="com.android.timlin.ivedioplayer.business.player.activities.RecentMediaActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:screenOrientation="user"
             android:theme="@style/AppTheme">
         </activity>
         <activity
-            android:name=".player.activities.SettingsActivity"
+            android:name="com.android.timlin.ivedioplayer.business.player.activities.SettingsActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:screenOrientation="user"
             android:theme="@style/AppTheme"/>
         <activity
-            android:name=".player.activities.VideoActivity"
+            android:name="com.android.timlin.ivedioplayer.business.player.activities.VideoActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:exported="true"
             android:label="@string/app_name"
@@ -78,12 +78,12 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".player.activities.FileExplorerActivity"/>
-        <activity android:name=".list.file.loader.VideoFolderListActivity">
+        <activity android:name="com.android.timlin.ivedioplayer.business.player.activities.FileExplorerActivity"/>
+        <activity android:name="com.android.timlin.ivedioplayer.business.list.file.loader.VideoFolderListActivity">
         </activity>
-        <activity android:name=".list.video.loader.VideoItemListActivity"/>
+        <activity android:name="com.android.timlin.ivedioplayer.business.list.video.loader.VideoItemListActivity"/>
         <activity
-            android:name=".welcome.SplashActivity"
+            android:name=".business.welcome.SplashActivity"
             android:theme="@style/Theme.App.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -93,7 +93,7 @@
         </activity>
 
         <service
-            android:name=".player.services.MediaPlayerService"
+            android:name="com.android.timlin.ivedioplayer.business.player.services.MediaPlayerService"
             android:enabled="false"
             android:exported="false"
             android:icon="@mipmap/ic_launcher"

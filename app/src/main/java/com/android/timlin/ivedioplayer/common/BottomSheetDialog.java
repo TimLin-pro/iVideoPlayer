@@ -23,10 +23,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.timlin.ivedioplayer.R;
-import com.android.timlin.ivedioplayer.list.VideoInfoFragment;
+import com.android.timlin.ivedioplayer.business.list.VideoInfoFragment;
 import com.android.timlin.ivedioplayer.common.utils.FileUtils;
 import com.android.timlin.ivedioplayer.common.utils.ScreenUtil;
-import com.android.timlin.ivedioplayer.list.video.loader.VideoItem;
+import com.android.timlin.ivedioplayer.business.list.video.loader.VideoItem;
 import com.yanzhenjie.permission.Action;
 import com.yanzhenjie.permission.AndPermission;
 import com.yanzhenjie.permission.runtime.Permission;
