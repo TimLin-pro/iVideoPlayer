@@ -192,7 +192,7 @@ public class VideoActivity extends AppCompatActivity implements TracksFragment.I
     }
 
     private void initVideoGestureManager() {
-        mVideoGestureManager = new VideoGestureManager(this);
+        mVideoGestureManager = new VideoGestureManager(this, mMediaController);
     }
 
     @Override

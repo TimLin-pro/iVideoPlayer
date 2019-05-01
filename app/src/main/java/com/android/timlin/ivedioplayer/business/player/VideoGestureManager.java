@@ -11,12 +11,13 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.MediaController;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.android.timlin.ivedioplayer.R;
-import com.android.timlin.ivedioplayer.common.utils.ScreenUtil;
 import com.android.timlin.ivedioplayer.business.player.widget.media.IjkVideoView;
+import com.android.timlin.ivedioplayer.common.utils.ScreenUtil;
 
 /**
  * Created by linjintian on 2019/4/27.
@@ -40,7 +41,9 @@ public class VideoGestureManager {
     private int mMaxVolume;
     private int mVolumeVal = -1;
     private float mBrightness = -1;
-    private long mNewPosition = -1;
+    private float mNewProgress = 0f;
+    private float mOldProgress = 0f;
+    private MediaController mMediaController;
 
     private Runnable mDismissVolumeRunnable = new Runnable() {
         @Override
@@ -61,8 +64,9 @@ public class VideoGestureManager {
         }
     };
 
-    public VideoGestureManager(final Activity activity) {
+    public VideoGestureManager(final Activity activity, MediaController mediaController) {
         mActivity = activity;
+        mMediaController = mediaController;
         initView(activity);
         initAudioManager(activity);
 
@@ -124,27 +128,61 @@ public class VideoGestureManager {
         mTvValue.setText(String.valueOf(volume));
     }
 
-    /**
-     * 调整播放进度
-     */
-    private void onProgressSlide(float percent) {
-        long position = mVideoView.getCurrentPosition();
-        long duration = mVideoView.getDuration();
-        long deltaMax = Math.min(100 * 1000, duration - position);
-        long delta = (long) (deltaMax * percent);
+//    /**
+//     * 调整播放进度
+//     */
+//    private void onProgressSlide(float percent) {
+//        long position = mVideoView.getCurrentPosition();
+//        long duration = mVideoView.getDuration();
+//        long deltaMax = Math.min(100 * 1000, duration - position);
+//        long delta = (long) (deltaMax * percent);
+//
+//        mNewProgress = delta + position;
+//        if (mNewProgress > duration) {
+//            mNewProgress = duration;
+//        } else if (mNewProgress <= 0) {
+//            mNewProgress = 0;
+//            delta = -position;
+//        }
+//        int showDelta = (int) delta / 1000;
+//        if (showDelta != 0) {
+//            String text = showDelta > 0 ? ("+" + showDelta) : "" + showDelta;
+//        }
+//        mVideoView.seekTo((int) mNewProgress);
+//    }
 
-        mNewPosition = delta + position;
-        if (mNewPosition > duration) {
-            mNewPosition = duration;
-        } else if (mNewPosition <= 0) {
-            mNewPosition = 0;
-            delta = -position;
+    private void onProgressSlide(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+        float offset = e2.getX() - e1.getX();
+        final int duration = mVideoView.getDuration();
+        final int videoViewWidth = mVideoView.getWidth();
+        Log.d(TAG, "onProgressSlide: offset " + offset);
+        Log.d(TAG, "onProgressSlide: videoViewWidth()" + videoViewWidth);
+        mNewProgress = mOldProgress + offset / videoViewWidth;
+        //根据移动的正负决定快进还是快退
+        if (offset > 0) {
+//            scl.setImageResource(R.drawable.ff);
+            mIvIcon.setImageResource(R.drawable.ic_forward);
+            if (mNewProgress > 1.f) {
+                mNewProgress = 1.f;
+            }
+        } else {
+            mIvIcon.setImageResource(R.drawable.ic_backward);
+            if (mNewProgress < 0) {
+                mNewProgress = 0;
+            }
         }
-        int showDelta = (int) delta / 1000;
-        if (showDelta != 0) {
-            String text = showDelta > 0 ? ("+" + showDelta) : "" + showDelta;
-        }
+        showValueIcContainer();
+        mTvValue.setText(String.format("%s%%", Math.round(mNewProgress * 100)));
+        mMediaController.show();
+        mVideoView.seekTo((int) (mNewProgress * duration));
     }
+
+    private void showValueIcContainer() {
+        mLlValueIcContainer.removeCallbacks(mDismissIcValueContainerRunnable);
+        mLlValueIcContainer.setVisibility(View.VISIBLE);
+        mLlValueIcContainer.postDelayed(mDismissIcValueContainerRunnable, DISMISS_DELAY_TIME_IN_MILL);
+    }
+
 
     /**
      * 滑动改变亮度
@@ -188,9 +226,7 @@ public class VideoGestureManager {
         mPbBrightness.setProgress(displayVal);
         mPbBrightness.postDelayed(mDismissBrightnessBarRunnable, DISMISS_DELAY_TIME_IN_MILL);
 
-        mLlValueIcContainer.removeCallbacks(mDismissIcValueContainerRunnable);
-        mLlValueIcContainer.setVisibility(View.VISIBLE);
-        mLlValueIcContainer.postDelayed(mDismissIcValueContainerRunnable, DISMISS_DELAY_TIME_IN_MILL);
+        showValueIcContainer();
         mIvIcon.setImageResource(R.drawable.ic_brightness);
         mTvValue.setText(String.valueOf(displayVal));
     }
@@ -210,6 +246,7 @@ public class VideoGestureManager {
         public boolean onDown(MotionEvent e) {
             mFirstTouch = true;
             //每次按下的时候更新当前亮度和音量，还有进度
+            mOldProgress = mNewProgress;
             updateBrightness();
             updateVolume();
             return super.onDown(e);
@@ -234,6 +271,9 @@ public class VideoGestureManager {
                 } else {
                     onBrightnessSlide(percent);
                 }
+            } else {
+//                onProgressSlide(-deltaX / mVideoView.getWidth());
+                onProgressSlide(e1, e2, distanceX, distanceY);
             }
             return super.onScroll(e1, e2, distanceX, distanceY);
         }

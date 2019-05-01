@@ -57,7 +57,7 @@
 
             <TextView
                 android:id="@+id/tv_value"
-                android:layout_width="48dp"
+                android:layout_width="64dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
                 android:textColor="@android:color/white"
