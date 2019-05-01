@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">iVedioPlayer</string>
+    <string name="app_name">多功能视频播放器</string>
     <string name="need_open_permission_before_use">需要开启权限后才能使用</string>
     <string name="go_setting">去设置</string>
     <string name="cancel">取消</string>
@@ -11,11 +11,11 @@
     <string name="sample">Sample</string>
     <string name="recent">Recent</string>
     <string name="settings">Settings</string>
-    <string name="tracks">Tracks</string>
+    <string name="tracks">音轨视轨</string>
     <string name="toggle_player">Player</string>
     <string name="toggle_render">Render</string>
     <string name="toggle_ratio">Scale</string>
-    <string name="show_info">Info</string>
+    <string name="show_info">属性</string>
     <string name="vdec">vdec</string>
     <string name="fps">fps</string>
     <string name="v_cache">v-cache</string>

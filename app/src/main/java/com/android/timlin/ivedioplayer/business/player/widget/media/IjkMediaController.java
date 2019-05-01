@@ -49,11 +49,6 @@ public class IjkMediaController extends MediaController implements IMediaControl
     private void initView(Context context) {
     }
 
-    @Override
-    public void setAnchorView(View view) {
-        super.setAnchorView(view);
-    }
-
     public void setSupportActionBar(@Nullable ActionBar actionBar) {
         mActionBar = actionBar;
         if (mActionBar != null) {
