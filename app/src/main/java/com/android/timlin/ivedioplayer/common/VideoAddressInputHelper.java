@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.net.Uri;
 import android.support.v7.app.AlertDialog;
+import android.text.Html;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
@@ -37,7 +38,8 @@ public class VideoAddressInputHelper {
     private void showAddressInputDialog() {
         final EditText urlEt = new EditText(mContext);
         new AlertDialog.Builder(mContext)
-                .setTitle(R.string.please_enter_video_address)
+                .setTitle(R.string.network_streaming)
+                .setMessage(Html.fromHtml("<font color=\"grey\">" + mContext.getString(R.string.please_enter_video_address) + "</font>"))
                 .setView(urlEt)
                 .setNegativeButton(R.string.cancel, null)
                 .setPositiveButton(R.string.sure, new DialogInterface.OnClickListener() {
