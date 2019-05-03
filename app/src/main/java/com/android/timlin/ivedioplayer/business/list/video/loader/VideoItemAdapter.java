@@ -83,7 +83,6 @@ public class VideoItemAdapter extends RecyclerViewCursorAdapter<VideoItemAdapter
                 mVideoItem = VideoItem.valueOf(cursor);
                 bindThumbnail();
                 mTvName.setText(mVideoItem.displayName);
-                //todo 耗时操作，移到子线程
                 mTvTime.setText(DateUtils.formatElapsedTime(mVideoItem.duration / 1000));
             } catch (Exception e) {
                 Log.e(TAG, "bindView: ", e);

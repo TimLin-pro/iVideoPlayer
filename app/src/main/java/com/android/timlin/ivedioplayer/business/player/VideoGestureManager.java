@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.media.AudioManager;
 import android.provider.Settings;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -35,6 +36,9 @@ public class VideoGestureManager {
     private LinearLayout mLlValueIcContainer;
     private ImageView mIvIcon;
     private TextView mTvValue;
+    private LinearLayout mLlPositionText;
+    private TextView mTvPosition;
+    private TextView mTvPositionOffset;
 
     private WindowManager.LayoutParams mLayoutParams;
 
@@ -55,6 +59,12 @@ public class VideoGestureManager {
         @Override
         public void run() {
             mLlValueIcContainer.setVisibility(View.INVISIBLE);
+        }
+    };
+    private Runnable mDismissProgressTextContainerRunnable = new Runnable() {
+        @Override
+        public void run() {
+            mLlPositionText.setVisibility(View.INVISIBLE);
         }
     };
     private Runnable mDismissBrightnessBarRunnable = new Runnable() {
@@ -87,6 +97,9 @@ public class VideoGestureManager {
         mLlValueIcContainer = activity.findViewById(R.id.ll_value_ic_container);
         mIvIcon = activity.findViewById(R.id.iv_icon);
         mTvValue = activity.findViewById(R.id.tv_value);
+        mLlPositionText = activity.findViewById(R.id.ll_position_text);
+        mTvPosition = activity.findViewById(R.id.tv_position);
+        mTvPositionOffset = activity.findViewById(R.id.tv_position_offset);
     }
 
     private void initVideoView(Activity activity) {
@@ -128,59 +141,61 @@ public class VideoGestureManager {
         mTvValue.setText(String.valueOf(volume));
     }
 
-//    /**
-//     * 调整播放进度
-//     */
-//    private void onProgressSlide(float percent) {
-//        long position = mVideoView.getCurrentPosition();
-//        long duration = mVideoView.getDuration();
-//        long deltaMax = Math.min(100 * 1000, duration - position);
-//        long delta = (long) (deltaMax * percent);
-//
-//        mNewProgress = delta + position;
-//        if (mNewProgress > duration) {
-//            mNewProgress = duration;
-//        } else if (mNewProgress <= 0) {
-//            mNewProgress = 0;
-//            delta = -position;
-//        }
-//        int showDelta = (int) delta / 1000;
-//        if (showDelta != 0) {
-//            String text = showDelta > 0 ? ("+" + showDelta) : "" + showDelta;
-//        }
-//        mVideoView.seekTo((int) mNewProgress);
-//    }
-
     private void onProgressSlide(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-        float offset = e2.getX() - e1.getX();
+        float scrollX = e2.getX() - e1.getX();
         final int duration = mVideoView.getDuration();
         final int videoViewWidth = mVideoView.getWidth();
-        Log.d(TAG, "onProgressSlide: offset " + offset);
-        Log.d(TAG, "onProgressSlide: videoViewWidth()" + videoViewWidth);
-        mNewProgress = mOldProgress + offset / videoViewWidth;
-        //根据移动的正负决定快进还是快退
-        if (offset > 0) {
-//            scl.setImageResource(R.drawable.ff);
-            mIvIcon.setImageResource(R.drawable.ic_forward);
+        long offsetTime = calculateOffsetTime(scrollX, duration, videoViewWidth);
+        limitProgressWithinBound(scrollX);
+        mTvPosition.setText(DateUtils.formatElapsedTime((long) (mNewProgress * duration / 1000)));
+        mTvPositionOffset.setText(String.format("[%s%s]", scrollX > 0 ? "+" : "-", DateUtils.formatElapsedTime(offsetTime)));
+        showProgressTextContainer();
+        mMediaController.show();//显示进度条所在的容器
+        mVideoView.seekTo((int) (mNewProgress * duration));
+    }
+
+    private void limitProgressWithinBound(float scrollX) {
+        if (scrollX > 0) {
             if (mNewProgress > 1.f) {
                 mNewProgress = 1.f;
             }
         } else {
-            mIvIcon.setImageResource(R.drawable.ic_backward);
             if (mNewProgress < 0) {
                 mNewProgress = 0;
             }
         }
-        showValueIcContainer();
-        mTvValue.setText(String.format("%s%%", Math.round(mNewProgress * 100)));
-        mMediaController.show();
-        mVideoView.seekTo((int) (mNewProgress * duration));
+    }
+
+    private long calculateOffsetTime(float scrollX, int duration, int videoViewWidth) {
+        mNewProgress = mOldProgress + scrollX / videoViewWidth;
+        long offsetTime = (long)( Math.abs(scrollX) / videoViewWidth * duration / 1000);
+        final int currentPosition = mVideoView.getCurrentPosition();
+        if (scrollX > 0) {
+            //如果是快进，则时间差不能大于剩下的 time
+            offsetTime = Math.min(offsetTime, duration - currentPosition);
+            if (mNewProgress > 1.f) {
+                mNewProgress = 1.f;
+            }
+        } else {
+            //如果是后退，则时间差不能大于已经经过的 time
+            offsetTime = Math.min(offsetTime, currentPosition);
+            if (mNewProgress < 0) {
+                mNewProgress = 0;
+            }
+        }
+        return offsetTime;
     }
 
     private void showValueIcContainer() {
         mLlValueIcContainer.removeCallbacks(mDismissIcValueContainerRunnable);
         mLlValueIcContainer.setVisibility(View.VISIBLE);
         mLlValueIcContainer.postDelayed(mDismissIcValueContainerRunnable, DISMISS_DELAY_TIME_IN_MILL);
+    }
+
+    private void showProgressTextContainer() {
+        mLlPositionText.removeCallbacks(mDismissProgressTextContainerRunnable);
+        mLlPositionText.setVisibility(View.VISIBLE);
+        mLlPositionText.postDelayed(mDismissProgressTextContainerRunnable, DISMISS_DELAY_TIME_IN_MILL);
     }
 
 
