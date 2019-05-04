@@ -24,15 +24,19 @@ import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 public class VideoItemListActivity extends AppCompatActivity implements VideoItemCollection.VideoItemCallbacks, VideoItemAdapter.OnVideoItemClickListener, BottomSheetDialog.RefreshCallback {
     private static final String TAG = "VideoFolderListActivity";
     public static final String KEY_ID = "id";
+    public static final String KEY_NAME = "name";
+
     private final VideoItemCollection mVideoItemCollection = new VideoItemCollection();
     private VideoItemAdapter mVideoItemAdapter = new VideoItemAdapter();
     private String mBuckedId;
     private RefreshLayout mRefreshLayout;
     private FloatingActionButton mFab;
+    private String mFolderName;
 
-    public static void startActivity(Context context, String id) {
+    public static void startActivity(Context context, String id, String name) {
         Intent intent = new Intent(context, VideoItemListActivity.class);
         intent.putExtra(KEY_ID, id);
+        intent.putExtra(KEY_NAME, name);
         context.startActivity(intent);
     }
 
@@ -40,12 +44,28 @@ public class VideoItemListActivity extends AppCompatActivity implements VideoIte
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_list);
-        mBuckedId = getIntent().getStringExtra(KEY_ID);
+        initParamFromIntent();
+        setTitle();
         initRv();
-        mVideoItemCollection.onCreate(this, this);
-        mVideoItemCollection.startLoadVideoData(mBuckedId);
+        initVideoItemCollection();
         initRefreshLayout();
         initVideoInputBtn();
+    }
+
+    private void initVideoItemCollection() {
+        mVideoItemCollection.onCreate(this, this);
+        mVideoItemCollection.startLoadVideoData(mBuckedId);
+    }
+
+    private void initParamFromIntent() {
+        mBuckedId = getIntent().getStringExtra(KEY_ID);
+        mFolderName = getIntent().getStringExtra(KEY_NAME);
+    }
+
+    private void setTitle() {
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(mFolderName);
+        }
     }
 
     private void initVideoInputBtn() {

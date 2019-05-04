@@ -1,5 +1,6 @@
 package com.android.timlin.ivedioplayer.business.list.file.loader;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -63,7 +64,8 @@ public class VideoFolderAdapter extends RecyclerViewCursorAdapter<VideoFolderAda
 
         @Override
         public void onClick(View v) {
-            VideoItemListActivity.startActivity(v.getContext(), mVideoFolder.getId());
+            final Context context = v.getContext();
+            VideoItemListActivity.startActivity(context, mVideoFolder.getId(), mVideoFolder.getDisplayName(context));
         }
 
         private void initView(View parent) {
