@@ -72,6 +72,7 @@ public class VideoActivity extends AppCompatActivity implements TracksFragment.I
     private PlayerSpeedController mPlayerSpeedController;
     private TextView mTvSrt;
     private VideoGestureManager mVideoGestureManager;
+    private SubtitleController mSubtitleController;
 
     public static Intent newIntent(Context context, String videoPath, String videoTitle) {
         Intent intent = new Intent(context, VideoActivity.class);
@@ -121,6 +122,12 @@ public class VideoActivity extends AppCompatActivity implements TracksFragment.I
     protected void onResume() {
         super.onResume();
 //        mVideoView.resume();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mSubtitleController.onDestroy();
     }
 
     private void initView() {
@@ -186,9 +193,9 @@ public class VideoActivity extends AppCompatActivity implements TracksFragment.I
     }
 
     private void initSubtitleController() {
-        SubtitleController subtitleController = new SubtitleController(mTvSrt, mVideoView);
+        mSubtitleController = new SubtitleController(mTvSrt, mVideoView);
         // TODO: 2019/4/26 read file path, avoid hard code
-        subtitleController.startDisplaySubtitle(Environment.getExternalStorageDirectory().getAbsolutePath() + "/f2.srt");
+        mSubtitleController.startDisplaySubtitle(Environment.getExternalStorageDirectory().getAbsolutePath() + "/f2.srt");
     }
 
     private void initVideoGestureManager() {

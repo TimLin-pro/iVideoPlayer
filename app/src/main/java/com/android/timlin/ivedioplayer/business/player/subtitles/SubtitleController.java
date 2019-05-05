@@ -39,6 +39,12 @@ public class SubtitleController {
         mMediaPlayerControl = mediaPlayerControl;
     }
 
+    public void onDestroy() {
+        if (mSubtitlesHandler != null) {
+            mSubtitlesHandler.removeCallbacksAndMessages(null);
+        }
+    }
+
     public void startDisplaySubtitle(String srtFilePath) {
         mEntryList = SubtitlesParser.parseSrtFile(srtFilePath);
         displaySubtitleInTime();

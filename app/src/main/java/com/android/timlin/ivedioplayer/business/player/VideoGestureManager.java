@@ -146,7 +146,7 @@ public class VideoGestureManager {
         final int duration = mVideoView.getDuration();
         final int videoViewWidth = mVideoView.getWidth();
         long offsetTime = calculateOffsetTime(scrollX, duration, videoViewWidth);
-        limitProgressWithinBound(scrollX);
+        calAndLimitProgressWithinBound(scrollX, videoViewWidth);
         mTvPosition.setText(DateUtils.formatElapsedTime((long) (mNewProgress * duration / 1000)));
         mTvPositionOffset.setText(String.format("[%s%s]", scrollX > 0 ? "+" : "-", DateUtils.formatElapsedTime(offsetTime)));
         showProgressTextContainer();
@@ -154,7 +154,8 @@ public class VideoGestureManager {
         mVideoView.seekTo((int) (mNewProgress * duration));
     }
 
-    private void limitProgressWithinBound(float scrollX) {
+    private void calAndLimitProgressWithinBound(float scrollX, int videoViewWidth) {
+        mNewProgress = mOldProgress + scrollX / videoViewWidth;
         if (scrollX > 0) {
             if (mNewProgress > 1.f) {
                 mNewProgress = 1.f;
@@ -167,21 +168,14 @@ public class VideoGestureManager {
     }
 
     private long calculateOffsetTime(float scrollX, int duration, int videoViewWidth) {
-        mNewProgress = mOldProgress + scrollX / videoViewWidth;
-        long offsetTime = (long)( Math.abs(scrollX) / videoViewWidth * duration / 1000);
+        long offsetTime = (long) (Math.abs(scrollX) / videoViewWidth * duration / 1000);
         final int currentPosition = mVideoView.getCurrentPosition();
         if (scrollX > 0) {
             //如果是快进，则时间差不能大于剩下的 time
             offsetTime = Math.min(offsetTime, duration - currentPosition);
-            if (mNewProgress > 1.f) {
-                mNewProgress = 1.f;
-            }
         } else {
             //如果是后退，则时间差不能大于已经经过的 time
             offsetTime = Math.min(offsetTime, currentPosition);
-            if (mNewProgress < 0) {
-                mNewProgress = 0;
-            }
         }
         return offsetTime;
     }
