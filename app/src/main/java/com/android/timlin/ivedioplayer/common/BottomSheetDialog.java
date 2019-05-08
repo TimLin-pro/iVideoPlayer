@@ -24,9 +24,9 @@ import android.widget.Toast;
 
 import com.android.timlin.ivedioplayer.R;
 import com.android.timlin.ivedioplayer.business.list.VideoInfoFragment;
+import com.android.timlin.ivedioplayer.business.list.video.loader.VideoItem;
 import com.android.timlin.ivedioplayer.common.utils.FileUtils;
 import com.android.timlin.ivedioplayer.common.utils.ScreenUtil;
-import com.android.timlin.ivedioplayer.business.list.video.loader.VideoItem;
 import com.yanzhenjie.permission.Action;
 import com.yanzhenjie.permission.AndPermission;
 import com.yanzhenjie.permission.runtime.Permission;
@@ -199,9 +199,15 @@ public class BottomSheetDialog extends DialogFragment implements View.OnClickLis
         final String path = FileUtils.INSTANCE.getRealFilePath(getContext(), mVideoItem.uri);
         File fromFile = new File(path);
         if (fromFile.exists()) {
-            String suffix = path.substring(path.lastIndexOf(".") + 1);
-            File toFile = new File(fromFile.getParent(), editText.getText().toString() + suffix);
-            showToast(fromFile.renameTo(toFile) ? R.string.rename_success : R.string.rename_fail);
+            String suffix = path.substring(path.lastIndexOf("."));
+            final String toFileName = editText.getText().toString() + suffix;
+            File toFile = new File(fromFile.getParent(), toFileName);
+            final boolean renameSuccess = fromFile.renameTo(toFile);
+            if (renameSuccess) {
+                MediaHelper.INSTANCE.removeMedia(getContext(), fromFile);
+                MediaHelper.INSTANCE.addMedia(getContext(), toFile);
+            }
+            showToast(renameSuccess ? R.string.rename_success : R.string.rename_fail);
         } else {
             showToast(R.string.file_not_exist_rename_fail);
         }
