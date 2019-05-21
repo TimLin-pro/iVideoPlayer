@@ -46,6 +46,7 @@ public class BottomSheetDialog extends DialogFragment implements View.OnClickLis
     private LinearLayout mLlDelete;
     private VideoItem mVideoItem;
     private RefreshCallback mRefreshCallback;
+    private Context mContext;
 
     public static BottomSheetDialog newInstance(VideoItem videoItem) {
         Bundle args = new Bundle();
@@ -78,6 +79,7 @@ public class BottomSheetDialog extends DialogFragment implements View.OnClickLis
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        mContext = view.getContext();
     }
 
     public void show(FragmentManager manager, RefreshCallback refreshCallback) {
@@ -137,6 +139,7 @@ public class BottomSheetDialog extends DialogFragment implements View.OnClickLis
 
     @Override
     public void onClick(View v) {
+        dismiss();
         switch (v.getId()) {
             case R.id.ll_rename:
                 showRenameDialog();
@@ -156,24 +159,26 @@ public class BottomSheetDialog extends DialogFragment implements View.OnClickLis
     }
 
     private void showDeleteDialog() {
-        new AlertDialog.Builder(getContext())
+        final Context context = getContext();
+        new AlertDialog.Builder(context)
                 .setTitle(R.string.delete)
                 .setMessage(getString(R.string.following_file_will_be_delete) + mVideoItem.displayName)
                 .setNegativeButton(getString(R.string.cancel), null)
                 .setPositiveButton(getString(R.string.sure), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        deleteUri(getContext(), mVideoItem.uri);
+                        deleteUri(context, mVideoItem.uri);
                     }
                 }).show();
     }
 
     private void showRenameDialog() {
-        final EditText editText = new EditText(getContext());
-        new AlertDialog.Builder(getContext())
+        final Context context = getContext();
+        final EditText editText = new EditText(context);
+        new AlertDialog.Builder(context)
                 .setTitle(R.string.rename_to)
                 .setView(editText)
-                .setPositiveButton(getContext().getString(R.string.sure), new DialogInterface.OnClickListener() {
+                .setPositiveButton(context.getString(R.string.sure), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (mVideoItem == null) {
@@ -181,22 +186,18 @@ public class BottomSheetDialog extends DialogFragment implements View.OnClickLis
                             return;
                         }
                         Log.d(TAG, "onAction: data mVideoItem.uri =  " + mVideoItem.uri);
-                        final String realFilePath = FileUtils.INSTANCE.getRealFilePath(getContext(), mVideoItem.uri);
+                        final String realFilePath = FileUtils.INSTANCE.getRealFilePath(context, mVideoItem.uri);
                         Log.d(TAG, "onClick: realFilePath = " + realFilePath);
                         doRename(editText);
                     }
                 })
-                .setNegativeButton(getContext().getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                })
+                .setNegativeButton(context.getString(R.string.cancel), null)
                 .show();
     }
 
     private void doRename(EditText editText) {
-        final String path = FileUtils.INSTANCE.getRealFilePath(getContext(), mVideoItem.uri);
+        final Context context = editText.getContext();
+        final String path = FileUtils.INSTANCE.getRealFilePath(context, mVideoItem.uri);
         File fromFile = new File(path);
         if (fromFile.exists()) {
             String suffix = path.substring(path.lastIndexOf("."));
@@ -204,12 +205,12 @@ public class BottomSheetDialog extends DialogFragment implements View.OnClickLis
             File toFile = new File(fromFile.getParent(), toFileName);
             final boolean renameSuccess = fromFile.renameTo(toFile);
             if (renameSuccess) {
-                MediaHelper.INSTANCE.removeMedia(getContext(), fromFile);
-                MediaHelper.INSTANCE.addMedia(getContext(), toFile);
+                MediaHelper.INSTANCE.removeMedia(context, fromFile);
+                MediaHelper.INSTANCE.addMedia(context, toFile);
             }
-            showToast(renameSuccess ? R.string.rename_success : R.string.rename_fail);
+            showToast(context, renameSuccess ? R.string.rename_success : R.string.rename_fail);
         } else {
-            showToast(R.string.file_not_exist_rename_fail);
+            showToast(context, R.string.file_not_exist_rename_fail);
         }
     }
 
@@ -229,7 +230,7 @@ public class BottomSheetDialog extends DialogFragment implements View.OnClickLis
                 }).onDenied(new Action<List<String>>() {
             @Override
             public void onAction(List<String> data) {
-                showToast(R.string.need_storage_permission_to_delete);
+                showToast(context, R.string.need_storage_permission_to_delete);
             }
         }).start();
     }
@@ -238,18 +239,18 @@ public class BottomSheetDialog extends DialogFragment implements View.OnClickLis
         if (ContentResolver.SCHEME_CONTENT.equals(uri.getScheme())) {
             int rowDelete = context.getContentResolver().delete(uri, null, null);
             if (rowDelete >= 0) {
-                showToast(R.string.delete_success);
+                showToast(context, R.string.delete_success);
                 refreshList();
-            } else showToast(R.string.delete_fail);
+            } else showToast(context, R.string.delete_fail);
         } else {
             File file = new File(FileUtils.INSTANCE.getRealFilePath(context, uri));
             if (file.exists() && file.isFile()) {
                 if (file.delete()) {
-                    showToast(R.string.delete_success);
+                    showToast(context, R.string.delete_success);
                     refreshList();
-                } else showToast(R.string.delete_fail);
+                } else showToast(context, R.string.delete_fail);
             } else {
-                showToast(R.string.fileDoesntExist);
+                showToast(context, R.string.fileDoesntExist);
             }
         }
     }
@@ -261,7 +262,15 @@ public class BottomSheetDialog extends DialogFragment implements View.OnClickLis
     }
 
     private void showToast(int strId) {
-        Toast.makeText(getContext(), getString(strId), Toast.LENGTH_SHORT).show();
+        if (mContext != null) {
+            Toast.makeText(mContext, mContext.getString(strId), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void showToast(Context context, int strId) {
+        if (context != null) {
+            Toast.makeText(context, context.getString(strId), Toast.LENGTH_SHORT).show();
+        }
     }
 
     public interface RefreshCallback {
